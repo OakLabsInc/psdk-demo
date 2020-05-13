@@ -19,7 +19,6 @@ enum class AuthorizationMethod : int {
     OTHER,
     /** The user was not required to perform any additional action */
     NONE,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const AuthorizationMethod& arg) {
@@ -29,7 +28,6 @@ constexpr std::string_view toString(const AuthorizationMethod& arg) {
         case AuthorizationMethod::ID: return "ID";
         case AuthorizationMethod::OTHER: return "OTHER";
         case AuthorizationMethod::NONE: return "NONE";
-        case AuthorizationMethod::MAX_COUNT: return "MAX_COUNT";
         default: return "AuthorizationMethod enum value not supported";
     }
 }

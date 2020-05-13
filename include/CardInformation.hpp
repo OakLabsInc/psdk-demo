@@ -60,7 +60,7 @@ public:
     static std::shared_ptr<CardInformation> create();
 
     /** The method used to obtain the card data */
-    virtual PresentationMethod getPresentationMethod() const = 0;
+    virtual std::optional<PresentationMethod> getPresentationMethod() const = 0;
 
     /** Present only with EMV cards and is representation of EMV Tag9F42. */
     virtual std::optional<std::string> getCardCurrency() const = 0;
@@ -78,7 +78,7 @@ public:
     virtual std::optional<std::string> getBankUserData() const = 0;
 
     /** The method by which the card was tokenized. */
-    virtual TokenizationMethod getCardTokenizationMethod() const = 0;
+    virtual std::optional<TokenizationMethod> getCardTokenizationMethod() const = 0;
 
     /**
      * A reference returned by the Payment Application to refer to the PAN in question.
@@ -158,7 +158,7 @@ public:
     virtual std::optional<std::string> getAccountReference() const = 0;
 
     /** Set the presentation method. The method used to set the card data */
-    virtual void setPresentationMethod(PresentationMethod presentationMethod) = 0;
+    virtual void setPresentationMethod(std::optional<PresentationMethod> presentationMethod) = 0;
 
     /** Set the card currency. Set only with EMV cards and is representation of EMV Tag9F42. */
     virtual void setCardCurrency(const std::optional<std::string> & cardCurrency) = 0;
@@ -183,11 +183,11 @@ public:
      * request a specific tokenization method, please use
      * {@link com.verifone.payment_sdk.Payment#setRequestedTokenizationMethod}.
      */
-    virtual void setCardTokenizationMethod(TokenizationMethod tokenizationMethod) = 0;
+    virtual void setCardTokenizationMethod(std::optional<TokenizationMethod> tokenizationMethod) = 0;
 
     /**
-     * A reference set by the Payment Application to refer to a specific PAN, only used while
-     * processing CP Triggers. A Commerce Application may choose to use PAN_Handle to request an
+     * A reference set by the Payment Application to refer to a specific PAN, only used while 
+     * processing CP Triggers. A Commerce Application may choose to use PAN_Handle to request an 
      * encrypted PAN via API CP_APP_REQUESTS_ENCRYPTED_CARD.
      */
     virtual void setPanHandle(const std::optional<std::string> & panHandle) = 0;

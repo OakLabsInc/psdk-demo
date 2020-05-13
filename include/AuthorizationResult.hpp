@@ -40,7 +40,6 @@ enum class AuthorizationResult : int {
     REFUND_DECLINED,
     /** For some payment types, the final status will need to be obtained at a later time */
     IN_PROGRESS,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const AuthorizationResult& arg) {
@@ -56,7 +55,6 @@ constexpr std::string_view toString(const AuthorizationResult& arg) {
         case AuthorizationResult::REFUNDED: return "REFUNDED";
         case AuthorizationResult::REFUND_DECLINED: return "REFUND_DECLINED";
         case AuthorizationResult::IN_PROGRESS: return "IN_PROGRESS";
-        case AuthorizationResult::MAX_COUNT: return "MAX_COUNT";
         default: return "AuthorizationResult enum value not supported";
     }
 }

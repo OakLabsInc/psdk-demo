@@ -29,7 +29,6 @@ enum class CmvAuthenticationMethod : int {
     ON_DEVICE,
     /** No CVM */
     NO_CVM_PERFORMED,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const CmvAuthenticationMethod& arg) {
@@ -44,7 +43,6 @@ constexpr std::string_view toString(const CmvAuthenticationMethod& arg) {
         case CmvAuthenticationMethod::NO_CVM_REQUIRED: return "NO_CVM_REQUIRED";
         case CmvAuthenticationMethod::ON_DEVICE: return "ON_DEVICE";
         case CmvAuthenticationMethod::NO_CVM_PERFORMED: return "NO_CVM_PERFORMED";
-        case CmvAuthenticationMethod::MAX_COUNT: return "MAX_COUNT";
         default: return "CmvAuthenticationMethod enum value not supported";
     }
 }

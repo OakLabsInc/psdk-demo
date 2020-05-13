@@ -10,9 +10,9 @@ namespace verifone_sdk {
 
 enum class HostDecisionType : int {
     /** Host Decision Authorized */
-    HOST_AUTHORISED,
+    HOST_AUTHORIZED,
     /** Host Decision Authorized Offline */
-    HOST_AUTHORISED_OFFLINE,
+    HOST_AUTHORIZED_OFFLINE,
     /** Host Decision Declined */
     HOST_DECLINED,
     /** Host Decision Declined Offline */
@@ -33,13 +33,12 @@ enum class HostDecisionType : int {
     HOST_MANUAL_REMOVE,
     /** Host Decision Retry Chip */
     HOST_RETRY_USE_CHIP,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const HostDecisionType& arg) {
     switch(arg) {
-        case HostDecisionType::HOST_AUTHORISED: return "HOST_AUTHORISED";
-        case HostDecisionType::HOST_AUTHORISED_OFFLINE: return "HOST_AUTHORISED_OFFLINE";
+        case HostDecisionType::HOST_AUTHORIZED: return "HOST_AUTHORIZED";
+        case HostDecisionType::HOST_AUTHORIZED_OFFLINE: return "HOST_AUTHORIZED_OFFLINE";
         case HostDecisionType::HOST_DECLINED: return "HOST_DECLINED";
         case HostDecisionType::HOST_DECLINED_OFFLINE: return "HOST_DECLINED_OFFLINE";
         case HostDecisionType::HOST_FAILED_TO_CONNECT: return "HOST_FAILED_TO_CONNECT";
@@ -50,7 +49,6 @@ constexpr std::string_view toString(const HostDecisionType& arg) {
         case HostDecisionType::HOST_VOICE_AUTH: return "HOST_VOICE_AUTH";
         case HostDecisionType::HOST_MANUAL_REMOVE: return "HOST_MANUAL_REMOVE";
         case HostDecisionType::HOST_RETRY_USE_CHIP: return "HOST_RETRY_USE_CHIP";
-        case HostDecisionType::MAX_COUNT: return "MAX_COUNT";
         default: return "HostDecisionType enum value not supported";
     }
 }

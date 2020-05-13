@@ -19,8 +19,6 @@ enum class TokenizationMethod : int {
     DEFAULT,
     /** None */
     NONE,
-    /** The count of all currently available enum values */
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const TokenizationMethod& arg) {
@@ -30,7 +28,6 @@ constexpr std::string_view toString(const TokenizationMethod& arg) {
         case TokenizationMethod::CUSTOM: return "CUSTOM";
         case TokenizationMethod::DEFAULT: return "DEFAULT";
         case TokenizationMethod::NONE: return "NONE";
-        case TokenizationMethod::MAX_COUNT: return "MAX_COUNT";
         default: return "TokenizationMethod enum value not supported";
     }
 }

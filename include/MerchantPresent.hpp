@@ -15,7 +15,6 @@ enum class MerchantPresent : int {
     SEMI_ATTENDED,
     /** The terminal is not attended */
     UNATTENDED,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const MerchantPresent& arg) {
@@ -23,7 +22,6 @@ constexpr std::string_view toString(const MerchantPresent& arg) {
         case MerchantPresent::ATTENDED: return "ATTENDED";
         case MerchantPresent::SEMI_ATTENDED: return "SEMI_ATTENDED";
         case MerchantPresent::UNATTENDED: return "UNATTENDED";
-        case MerchantPresent::MAX_COUNT: return "MAX_COUNT";
         default: return "MerchantPresent enum value not supported";
     }
 }

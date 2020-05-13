@@ -13,14 +13,12 @@ enum class ReceiptType : int {
     CUSTOMER,
     /** receipt for the merchant */
     MERCHANT,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const ReceiptType& arg) {
     switch(arg) {
         case ReceiptType::CUSTOMER: return "CUSTOMER";
         case ReceiptType::MERCHANT: return "MERCHANT";
-        case ReceiptType::MAX_COUNT: return "MAX_COUNT";
         default: return "ReceiptType enum value not supported";
     }
 }

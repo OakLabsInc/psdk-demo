@@ -31,8 +31,6 @@ enum class PresentationMethod : int {
     FILE,
     /** EMV chip, synchronously confirmed. */
     CHIP_SYNCHRONOUS,
-    /** Maximum count */
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const PresentationMethod& arg) {
@@ -48,7 +46,6 @@ constexpr std::string_view toString(const PresentationMethod& arg) {
         case PresentationMethod::SCANNED: return "SCANNED";
         case PresentationMethod::FILE: return "FILE";
         case PresentationMethod::CHIP_SYNCHRONOUS: return "CHIP_SYNCHRONOUS";
-        case PresentationMethod::MAX_COUNT: return "MAX_COUNT";
         default: return "PresentationMethod enum value not supported";
     }
 }

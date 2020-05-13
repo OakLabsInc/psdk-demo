@@ -21,7 +21,6 @@ enum class FallbackCode : int {
     MAG_STRIPE_TO_MANUAL,
     /** Mag stripe read failed using ICC */
     MAG_STRIPE_TO_ICC,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const FallbackCode& arg) {
@@ -32,7 +31,6 @@ constexpr std::string_view toString(const FallbackCode& arg) {
         case FallbackCode::ICC_TO_MANUAL: return "ICC_TO_MANUAL";
         case FallbackCode::MAG_STRIPE_TO_MANUAL: return "MAG_STRIPE_TO_MANUAL";
         case FallbackCode::MAG_STRIPE_TO_ICC: return "MAG_STRIPE_TO_ICC";
-        case FallbackCode::MAX_COUNT: return "MAX_COUNT";
         default: return "FallbackCode enum value not supported";
     }
 }

@@ -15,7 +15,6 @@ enum class InstrumentType : int {
     PRE_AUTHORIZATION,
     /** Token Intrument Type */
     TOKEN,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const InstrumentType& arg) {
@@ -23,7 +22,6 @@ constexpr std::string_view toString(const InstrumentType& arg) {
         case InstrumentType::CARD: return "CARD";
         case InstrumentType::PRE_AUTHORIZATION: return "PRE_AUTHORIZATION";
         case InstrumentType::TOKEN: return "TOKEN";
-        case InstrumentType::MAX_COUNT: return "MAX_COUNT";
         default: return "InstrumentType enum value not supported";
     }
 }

@@ -30,7 +30,6 @@ enum class OfferType : int {
      * This should not be tied to a specific item
      */
     TRANSACTION_DISCOUNT,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const OfferType& arg) {
@@ -41,7 +40,6 @@ constexpr std::string_view toString(const OfferType& arg) {
         case OfferType::PRODUCT_DISCOUNT: return "PRODUCT_DISCOUNT";
         case OfferType::LOYALTY_CARD: return "LOYALTY_CARD";
         case OfferType::TRANSACTION_DISCOUNT: return "TRANSACTION_DISCOUNT";
-        case OfferType::MAX_COUNT: return "MAX_COUNT";
         default: return "OfferType enum value not supported";
     }
 }

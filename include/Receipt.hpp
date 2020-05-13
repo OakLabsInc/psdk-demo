@@ -67,7 +67,7 @@ public:
     virtual bool isQrCodeIncluded() const = 0;
 
     /** The type of receipt, generally either for the customer or for the merchant. */
-    virtual ReceiptType getReceiptType() const = 0;
+    virtual std::optional<ReceiptType> getReceiptType() const = 0;
 
     /**
      * The Business Info section of the receipt, as customized by the merchant in the receipt

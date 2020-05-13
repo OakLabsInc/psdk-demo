@@ -15,7 +15,6 @@ enum class EbtType : int {
     CASH_BENEFITS,
     UNKNOWN,
     INVALID,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const EbtType& arg) {
@@ -24,7 +23,6 @@ constexpr std::string_view toString(const EbtType& arg) {
         case EbtType::CASH_BENEFITS: return "CASH_BENEFITS";
         case EbtType::UNKNOWN: return "UNKNOWN";
         case EbtType::INVALID: return "INVALID";
-        case EbtType::MAX_COUNT: return "MAX_COUNT";
         default: return "EbtType enum value not supported";
     }
 }

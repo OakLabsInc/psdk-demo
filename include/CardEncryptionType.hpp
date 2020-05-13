@@ -15,7 +15,6 @@ enum class CardEncryptionType : int {
     ADE,
     /** PKI encryption used for card details */
     PKI,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const CardEncryptionType& arg) {
@@ -23,7 +22,6 @@ constexpr std::string_view toString(const CardEncryptionType& arg) {
         case CardEncryptionType::VCL: return "VCL";
         case CardEncryptionType::ADE: return "ADE";
         case CardEncryptionType::PKI: return "PKI";
-        case CardEncryptionType::MAX_COUNT: return "MAX_COUNT";
         default: return "CardEncryptionType enum value not supported";
     }
 }

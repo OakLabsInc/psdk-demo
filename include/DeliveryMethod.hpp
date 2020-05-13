@@ -17,7 +17,6 @@ enum class DeliveryMethod : int {
     SMS,
     /** The customer does not want a receipt */
     NONE,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const DeliveryMethod& arg) {
@@ -26,7 +25,6 @@ constexpr std::string_view toString(const DeliveryMethod& arg) {
         case DeliveryMethod::EMAIL: return "EMAIL";
         case DeliveryMethod::SMS: return "SMS";
         case DeliveryMethod::NONE: return "NONE";
-        case DeliveryMethod::MAX_COUNT: return "MAX_COUNT";
         default: return "DeliveryMethod enum value not supported";
     }
 }

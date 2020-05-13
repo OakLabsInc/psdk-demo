@@ -33,7 +33,7 @@ public:
     virtual std::optional<std::string> getProvider() const = 0;
 
     /** Returns the type of card */
-    virtual CardType getCardType() const = 0;
+    virtual std::optional<CardType> getCardType() const = 0;
 
     /** Refer to {@link #setPinCode(String)}. */
     virtual std::optional<std::string> getPinCode() const = 0;
@@ -45,13 +45,13 @@ public:
     virtual std::optional<std::string> getBarcode() const = 0;
 
     /** Refer to {@link #setEbtType(String)}. */
-    virtual EbtType getEbtType() const = 0;
+    virtual std::optional<EbtType> getEbtType() const = 0;
 
     /** Set the name of the stored value provider */
     virtual void setProvider(const std::optional<std::string> & provider) = 0;
 
     /** Set the type of card */
-    virtual void setCardType(CardType cardType) = 0;
+    virtual void setCardType(std::optional<CardType> cardType) = 0;
 
     /**
      * When performing an action for stored value, use this field to set the pin code when the
@@ -75,10 +75,10 @@ public:
      * When performing an action for stored value, use this field to set the Ebt type when it is
      * collected by the POS.
      */
-    virtual void setEbtType(EbtType ebtType) = 0;
+    virtual void setEbtType(std::optional<EbtType> ebtType) = 0;
 
     /** The method used to obtain the card data */
-    virtual PresentationMethod getPresentationMethod() const = 0;
+    virtual std::optional<PresentationMethod> getPresentationMethod() const = 0;
 
     /** Present only with EMV cards and is representation of EMV Tag9F42. */
     virtual std::optional<std::string> getCardCurrency() const = 0;
@@ -96,7 +96,7 @@ public:
     virtual std::optional<std::string> getBankUserData() const = 0;
 
     /** The method by which the card was tokenized. */
-    virtual TokenizationMethod getCardTokenizationMethod() const = 0;
+    virtual std::optional<TokenizationMethod> getCardTokenizationMethod() const = 0;
 
     /**
      * A reference returned by the Payment Application to refer to the PAN in question.
@@ -170,7 +170,7 @@ public:
     virtual std::optional<std::string> getAccountReference() const = 0;
 
     /** Set the presentation method. The method used to set the card data */
-    virtual void setPresentationMethod(PresentationMethod presentationMethod) = 0;
+    virtual void setPresentationMethod(std::optional<PresentationMethod> presentationMethod) = 0;
 
     /** Set the card currency. Set only with EMV cards and is representation of EMV Tag9F42. */
     virtual void setCardCurrency(const std::optional<std::string> & cardCurrency) = 0;
@@ -195,11 +195,11 @@ public:
      * request a specific tokenization method, please use
      * {@link com.verifone.payment_sdk.Payment#setRequestedTokenizationMethod}.
      */
-    virtual void setCardTokenizationMethod(TokenizationMethod tokenizationMethod) = 0;
+    virtual void setCardTokenizationMethod(std::optional<TokenizationMethod> tokenizationMethod) = 0;
 
     /**
-     * A reference set by the Payment Application to refer to a specific PAN, only used while
-     * processing CP Triggers. A Commerce Application may choose to use PAN_Handle to request an
+     * A reference set by the Payment Application to refer to a specific PAN, only used while 
+     * processing CP Triggers. A Commerce Application may choose to use PAN_Handle to request an 
      * encrypted PAN via API CP_APP_REQUESTS_ENCRYPTED_CARD.
      */
     virtual void setPanHandle(const std::optional<std::string> & panHandle) = 0;

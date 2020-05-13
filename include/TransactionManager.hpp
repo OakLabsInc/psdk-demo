@@ -15,6 +15,7 @@ namespace verifone_sdk {
 class BasketManager;
 class CommerceListener;
 class CommerceResponse;
+class LoginCredentials;
 class Payment;
 class ReportManager;
 class Status;
@@ -121,6 +122,9 @@ public:
 
     /** The protocol value for CRS. */
     static std::string const DEVICE_PROTOCOL_CRS;
+
+    /** The protocol value for SDI. */
+    static std::string const DEVICE_PROTOCOL_SDI;
 
     /**
      * Allows the calling POS application to provide an application name, 
@@ -264,13 +268,6 @@ public:
     virtual std::shared_ptr<Transaction> getTransaction() = 0;
 
     /**
-     * Allows a transaction to be updated with new values, particularly 
-     * helpful if the invoice or type needs to be changed, or other similar 
-     * values.
-     */
-    virtual bool updateTransaction(const std::shared_ptr<Transaction> & transaction) = 0;
-
-    /**
      * The method to get an appropriate concrete implementation of the 
      * Basket Manager. 
      * @return A concrete implementation of the basket manager.
@@ -287,16 +284,6 @@ public:
      * to define the required authorization method for this payment.
      */
     virtual std::shared_ptr<Status> startPayment(const std::shared_ptr<Payment> & payment) = 0;
-
-    /**
-     * Cancels the current payment or other action, but does not reset the 
-     * session. If a new invoice ID is needed, or a new cart, end the 
-     * session or purge the basket, respectively.
-     * @return A status object indicating if the command was issued 
-     * properly. Events regarding the transaction are sent to the 
-     * registered listener(s).
-     */
-    virtual std::shared_ptr<Status> cancelTransaction() = 0;
 
     /**
      * Attempts to void the transaction.
@@ -537,6 +524,24 @@ public:
      * earlier.
      */
     virtual std::shared_ptr<Status> login(const std::shared_ptr<CommerceListener> & listener, const std::optional<std::string> & userId, const std::optional<std::string> & password, const std::optional<std::string> & shiftNumber) = 0;
+
+    /**
+     * Logs in through the payment terminal, possibly synchronizing 
+     * information from the host to the terminal and performing other 
+     * similar setup/configuration steps. Also used for following
+     * transactions, allowing them to be tracked by user and/or according 
+     * to the shift. Notifies all general listeners with a 
+     * {@link TransactionEvent} of type
+     * {@link TransactionEvent#LOGIN_COMPLETED}. Use the status from this 
+     * event to determine the success or failure of the request, using any 
+     * of the constant error codes to determine the nature of the failure 
+     * if not successful.
+     * @param LoginCredentials.
+     * @return A status code. Returns success or failure of sending the request to the terminal. 
+     * The actual result will be sent using the notification described 
+     * earlier.
+     */
+    virtual std::shared_ptr<Status> loginWithCredentials(const std::shared_ptr<LoginCredentials> & credentials) = 0;
 
     /**
      * Logs out through the payment terminal. This must always be used in 

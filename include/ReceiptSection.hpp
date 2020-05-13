@@ -23,7 +23,6 @@ enum class ReceiptSection : int {
     BEFORE_CUSTOM_FOOTER,
     /** The section after the custom mFooter but before any final mFooter text, such as final legal disclaimers */
     AFTER_CUSTOM_FOOTER,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const ReceiptSection& arg) {
@@ -35,7 +34,6 @@ constexpr std::string_view toString(const ReceiptSection& arg) {
         case ReceiptSection::AFTER_TRANSACTION: return "AFTER_TRANSACTION";
         case ReceiptSection::BEFORE_CUSTOM_FOOTER: return "BEFORE_CUSTOM_FOOTER";
         case ReceiptSection::AFTER_CUSTOM_FOOTER: return "AFTER_CUSTOM_FOOTER";
-        case ReceiptSection::MAX_COUNT: return "MAX_COUNT";
         default: return "ReceiptSection enum value not supported";
     }
 }

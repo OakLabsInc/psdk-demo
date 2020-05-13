@@ -17,6 +17,7 @@ class Image;
 class Installment;
 class Receipt;
 class StoredValueCardInformation;
+enum class AccountType;
 enum class AuthorizationMethod;
 enum class AuthorizationResult;
 enum class PaymentType;
@@ -92,6 +93,9 @@ public:
      * initiated and may not be changed. This may be empty.
      */
     virtual std::optional<std::string> getCashierId() const = 0;
+
+    /** The account type used to complete this payment. This may be empty. */
+    virtual std::optional<AccountType> getAccountType() const = 0;
 
     /** The payment type used to complete this payment. This may be empty. */
     virtual std::optional<PaymentType> getPaymentType() const = 0;
@@ -306,6 +310,9 @@ public:
     /** Refer to {@link #setRequestedPaymentType(paymentType)}. */
     virtual std::optional<PaymentType> getRequestedPaymentType() const = 0;
 
+    /** The account type used to complete this payment. */
+    virtual void setAccountType(std::optional<AccountType> accountType) = 0;
+
     /** The payment type used to complete this payment. */
     virtual void setPaymentType(std::optional<PaymentType> paymentType) = 0;
 
@@ -355,7 +362,7 @@ public:
      * Request a specific type of token. This is required to receive a token when the payment is
      * completed.
      */
-    virtual void setRequestedTokenizationMethod(TokenizationMethod tokenizationMethod) = 0;
+    virtual void setRequestedTokenizationMethod(std::optional<TokenizationMethod> tokenizationMethod) = 0;
 
     /** Refer to {@link #setRequestedTokenizationMethod(tokenizationMethod)}. */
     virtual std::optional<TokenizationMethod> getRequestedTokenizationMethod() const = 0;

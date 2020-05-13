@@ -14,6 +14,7 @@ namespace verifone_sdk {
 class AccessibilityManager;
 class PlatformContextInterface;
 class PsdkStatusListener;
+class SdiManager;
 class TransactionManager;
 enum class PsdkLogLevel;
 struct PsdkDeviceInformation;
@@ -99,6 +100,12 @@ public:
 
     /** Sets the log verbosity to desired level */
     virtual void configureLogLevel(PsdkLogLevel level) = 0;
+
+    /**
+     * Get SdiManager for this session
+     * Must have called setupSession successfully prior to making this call
+     */
+    virtual std::shared_ptr<SdiManager> getSdiManager() = 0;
 };
 
 }  // namespace verifone_sdk

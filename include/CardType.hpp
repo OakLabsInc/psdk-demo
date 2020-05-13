@@ -17,7 +17,6 @@ enum class CardType : int {
     PHONE_CARD,
     /** This card represents another type of stored value */
     OTHER_CARD,
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const CardType& arg) {
@@ -26,7 +25,6 @@ constexpr std::string_view toString(const CardType& arg) {
         case CardType::EBT_CARD: return "EBT_CARD";
         case CardType::PHONE_CARD: return "PHONE_CARD";
         case CardType::OTHER_CARD: return "OTHER_CARD";
-        case CardType::MAX_COUNT: return "MAX_COUNT";
         default: return "CardType enum value not supported";
     }
 }

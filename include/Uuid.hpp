@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2018 by VeriFone, Inc.
+ * Copyright (c) 2020 by VeriFone, Inc.
  * All Rights Reserved.
- * THIS FILE CONTAINS PROPRIETARY AND CONFIDENTIAL INFORMATION
- * AND REMAINS THE UNPUBLISHED PROPERTY OF VERIFONE, INC.
+ * THIS FILE CONTAINS PROPRIETARY INFORMATION
+ * AND REMAINS THE PROPERTY OF VERIFONE, INC.
  *
  * Use, disclosure, or reproduction is prohibited
  * without prior written approval from VeriFone, Inc.

@@ -153,7 +153,7 @@ public:
     virtual std::optional<std::string> getOfferId() const = 0;
 
     /** The type of the offer. This is required. */
-    virtual OfferType getOfferType() const = 0;
+    virtual std::optional<OfferType> getOfferType() const = 0;
 
     /** Indicates if the purchase is returnable. This is optional. */
     virtual bool getOfferRefundable() const = 0;
@@ -206,7 +206,7 @@ public:
     virtual void setOfferId(const std::optional<std::string> & offerId) = 0;
 
     /** Refer to {@link #getOfferType()}. */
-    virtual void setOfferType(OfferType offerType) = 0;
+    virtual void setOfferType(std::optional<OfferType> offerType) = 0;
 
     /** Refer to {@link #getOfferRefundable()}. */
     virtual void setOfferRefundable(bool offerRefundable) = 0;

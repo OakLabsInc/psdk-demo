@@ -8,6 +8,8 @@
 
 namespace verifone_sdk {
 
+enum class LocalizedStringEnum;
+
 /** Contains those objects meant for internal usage only. Not to be exposed to third-parties. */
 class PlatformContextInterface {
 public:
@@ -24,6 +26,9 @@ public:
 
     /** Removes a key and its value */
     virtual void RemoveStoredValue(const std::string & key) = 0;
+
+    /** Get the localized string based on the device language */
+    virtual std::string GetLocalizedString(LocalizedStringEnum key) = 0;
 };
 
 }  // namespace verifone_sdk

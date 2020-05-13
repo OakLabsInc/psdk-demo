@@ -17,8 +17,6 @@ enum class Roles : int {
     CASHIER,
     /** Merchant Staff */
     STAFF,
-    /** Maximum Count */
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const Roles& arg) {
@@ -27,7 +25,6 @@ constexpr std::string_view toString(const Roles& arg) {
         case Roles::MANAGER: return "MANAGER";
         case Roles::CASHIER: return "CASHIER";
         case Roles::STAFF: return "STAFF";
-        case Roles::MAX_COUNT: return "MAX_COUNT";
         default: return "Roles enum value not supported";
     }
 }

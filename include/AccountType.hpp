@@ -12,7 +12,7 @@ enum class AccountType : int {
     /** Default Account to be used */
     DEFAULT,
     /** Check Account to be used */
-    CHEQUE,
+    CHECKING,
     /** Savings Account to be used */
     SAVINGS,
     /** Credit Account to be used */
@@ -27,14 +27,12 @@ enum class AccountType : int {
     STORED_VALUE,
     /** Debit Account to be used */
     DEBIT,
-    /** Default Account to be used */
-    MAX_COUNT,
 };
 
 constexpr std::string_view toString(const AccountType& arg) {
     switch(arg) {
         case AccountType::DEFAULT: return "DEFAULT";
-        case AccountType::CHEQUE: return "CHEQUE";
+        case AccountType::CHECKING: return "CHECKING";
         case AccountType::SAVINGS: return "SAVINGS";
         case AccountType::CREDIT: return "CREDIT";
         case AccountType::UNIVERSAL: return "UNIVERSAL";
@@ -42,7 +40,6 @@ constexpr std::string_view toString(const AccountType& arg) {
         case AccountType::EBT_CASH: return "EBT_CASH";
         case AccountType::STORED_VALUE: return "STORED_VALUE";
         case AccountType::DEBIT: return "DEBIT";
-        case AccountType::MAX_COUNT: return "MAX_COUNT";
         default: return "AccountType enum value not supported";
     }
 }
