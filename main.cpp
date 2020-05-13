@@ -206,10 +206,10 @@ int main()
 
       auto payment = verifone_sdk::Payment::create();
 
-      payment->getRequestedAmounts()->setSubtotal(verifone_sdk::Decimal(2, 100));
-      payment->getRequestedAmounts()->setTax(verifone_sdk::Decimal(2, 100));
-      payment->getRequestedAmounts()->setGratuity(verifone_sdk::Decimal(2, 100));
-      payment->getRequestedAmounts()->setTotal(verifone_sdk::Decimal(2, 400));
+      payment->getRequestedAmounts()->setSubtotal(verifone_sdk::Decimal(2, 25));
+      payment->getRequestedAmounts()->setTax(verifone_sdk::Decimal(2, 25));
+      payment->getRequestedAmounts()->setGratuity(verifone_sdk::Decimal(2, 25));
+      payment->getRequestedAmounts()->setTotal(verifone_sdk::Decimal(2, 100));
 
       //    auto payment_amount_totals = verifone_sdk::AmountTotals::create(true);
       //    payment_amount_totals->setWithAmounts({{2, 2000}}, {{2, 200}}, {{2, 200}}, {}, {}, {}, {{2, 2400}});
