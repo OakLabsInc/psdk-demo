@@ -201,10 +201,10 @@ int main() {
    
     auto payment = verifone_sdk::Payment::create();
 
-    payment->getRequestedAmounts()->setSubtotal(verifone_sdk::Decimal(2,200));
-    payment->getRequestedAmounts()->setTax(verifone_sdk::Decimal(2,300));
-    payment->getRequestedAmounts()->setGratuity(verifone_sdk::Decimal(2,400));
-    payment->getRequestedAmounts()->setTotal(verifone_sdk::Decimal(2,900));
+    payment->getRequestedAmounts()->setSubtotal(verifone_sdk::Decimal(2,100));
+    payment->getRequestedAmounts()->setTax(verifone_sdk::Decimal(2,100));
+    payment->getRequestedAmounts()->setGratuity(verifone_sdk::Decimal(2,100));
+    payment->getRequestedAmounts()->setTotal(verifone_sdk::Decimal(2,400));
 
 //    auto payment_amount_totals = verifone_sdk::AmountTotals::create(true);
 //    payment_amount_totals->setWithAmounts({{2, 2000}}, {{2, 200}}, {{2, 200}}, {}, {}, {}, {{2, 2400}});
@@ -235,9 +235,10 @@ int main() {
 //    payment->setRequestedPaymentType(verifone_sdk::PaymentType::DEBIT);
 //    payment->setRequestedPaymentType(verifone_sdk::PaymentType::CREDIT);
 
-//  transaction_manager->startPayment(payment);
-    psdk->getTransactionManager()->startPayment(payment);
-//   transaction_manager->logout();
+     transaction_manager->startPayment(payment);
+//    psdk->getTransactionManager()->startPayment(payment);
+     transaction_manager->endSession();
+//     transaction_manager->logout();
 
    } else {
     // Session start failed to send
