@@ -2,6 +2,9 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <string>
+#include <sstream>
+#include <vector>
 
 #include "PaymentSdkInterface.hpp"
 #include "PlatformContextLinux.hpp"
@@ -25,11 +28,30 @@
 #include "HostAuthorizationEvent.hpp"
 #include "PaymentCompletedEvent.hpp"
 
-class FooListener : public verifone_sdk::CommerceListener
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
+void handle_response(std::string in_status, std::string in_message)
+{
+
+  // in_status should be SUCCESS or FAILED
+  // print response
+  // { status: in_status, message: in_message }
+
+  json response_json;
+  response_json["status"] = in_status;
+  response_json["message"] = in_message;
+  
+  std::cout << response_json << std::endl;
+  
+}
+
+class ComListener : public verifone_sdk::CommerceListener
 {
 
 public:
-  ~FooListener() override = default;
+  ~ComListener() override = default;
 
   std::shared_ptr<verifone_sdk::CommerceResponse> handleCommerceEvent(const std::shared_ptr<verifone_sdk::CommerceEvent> &event) override
   {
@@ -99,13 +121,17 @@ public:
 
       if (event->getStatus() == verifone_sdk::StatusCode::SUCCESS)
       {
-        //     std::cout << "SPENCERFOO: getStatus is SUCCESS" << std::endl;
-        //     auto payment = event->getPayment();
-        //     auto auth_result = payment->getAuthResult();
+        auto payment = event->getPayment();
+        auto auth_result = payment->getAuthResult();
+        handle_response("SUCCESS", "");
         // Confirm the authorization result is AUTHORIZED instead
         // of DECLINED or some other result.
       }
-      // Else handle failure by examining the status code and message.
+      else
+      {
+        handle_response("ERROR", "");
+        // else handle failure by examining the status code and message.
+      }
     }
 
     return nullptr;
@@ -171,8 +197,58 @@ private:
   HandleEventListener listener_;
 };
 
-int main()
+
+verifone_sdk::Decimal string_to_decimal(std::string in_string)
 {
+
+  std::vector<std::string> split_string;
+  std::istringstream in_string_stream(in_string);
+  std::string string_token;
+  while (getline(in_string_stream, string_token, '.'))
+  {
+    split_string.push_back(string_token);
+  }
+
+  int64_t value;
+  std::istringstream iss(split_string[0].append(split_string[1]));
+  iss >> value;
+
+  return verifone_sdk::Decimal(split_string[1].length(), value);
+}
+
+verifone_sdk::Decimal sub_total;
+verifone_sdk::Decimal tax_rate;
+verifone_sdk::Decimal tax;
+verifone_sdk::Decimal gratuity;
+verifone_sdk::Decimal net_total;
+
+void parse_json_payload(std::string in_json_string)
+{
+
+  json json_payload = json::parse(in_json_string);
+  sub_total = string_to_decimal(json_payload["total"]);
+  tax_rate = string_to_decimal(json_payload["taxRate"]);
+  tax = string_to_decimal(json_payload["tax"]);
+  //  gratuity = string_to_decimal(json_payload["gratuity"]);
+  net_total = string_to_decimal(json_payload["grandTotal"]);
+}
+
+std::string terminal_ip;
+int main(int argc, char **argv)
+{
+
+  // '{ "total": 20.2, "taxRate": 0.085, "tax": 1.717, "grandTotal": 21.916999999999998 }' '192.168.255.35'
+
+  if (argc != 3)
+  {
+    std::cout << "argc != 3: " << argc << std::endl;
+    return 1;
+  }
+
+  std::string json_string = argv[1];
+  terminal_ip = argv[2];
+
+  parse_json_payload(json_string);
 
   // std::unordered_map<std::string, std::string> param_map{
   //     {verifone_sdk::TransactionManager::DEVICE_LISTEN_KEY,
@@ -181,7 +257,7 @@ int main()
   //  };
 
   std::unordered_map<std::string, std::string> param_map{
-      {verifone_sdk::PsdkDeviceInformation::DEVICE_ADDRESS_KEY, "192.168.255.35"},
+      {verifone_sdk::PsdkDeviceInformation::DEVICE_ADDRESS_KEY, terminal_ip},
       {verifone_sdk::PsdkDeviceInformation::DEVICE_CONNECTION_TYPE_KEY, "tcpip"}};
 
   int last_status;
@@ -192,54 +268,26 @@ int main()
 
   psdk->initializeFromValues(listener, param_map);
 
-  std::shared_ptr<verifone_sdk::CommerceListener> foo_listener = std::make_shared<FooListener>();
+  std::shared_ptr<verifone_sdk::CommerceListener> com_listener = std::make_shared<ComListener>();
 
   if (auto transaction_manager = psdk->getTransactionManager())
   {
 
-    auto login_status = transaction_manager->login(foo_listener, std::nullopt, std::nullopt, std::nullopt);
+    auto login_status = transaction_manager->login(com_listener, std::nullopt, std::nullopt, std::nullopt);
 
-    if (transaction_manager && transaction_manager->startSession(foo_listener, verifone_sdk::Transaction::create()))
+    if (transaction_manager && transaction_manager->startSession(com_listener, verifone_sdk::Transaction::create()))
     {
 
       std::cout << "Session start was sent successfully" << std::endl;
 
       auto payment = verifone_sdk::Payment::create();
 
-      payment->getRequestedAmounts()->setSubtotal(verifone_sdk::Decimal(2, 25));
-      payment->getRequestedAmounts()->setTax(verifone_sdk::Decimal(2, 25));
-      payment->getRequestedAmounts()->setGratuity(verifone_sdk::Decimal(2, 25));
-      payment->getRequestedAmounts()->setTotal(verifone_sdk::Decimal(2, 100));
-
-      //    auto payment_amount_totals = verifone_sdk::AmountTotals::create(true);
-      //    payment_amount_totals->setWithAmounts({{2, 2000}}, {{2, 200}}, {{2, 200}}, {}, {}, {}, {{2, 2400}});
-      //    payment->setRequestedAmounts(payment_amount_totals);
-
-      /*
-      subtotal
-      tax
-      gratuity
-      fees
-      cashback
-      donation
-      total
-    */
-      //    auto amount_totals = verifone_sdk::AmountTotals::create(true);
-      //    amount_totals->setWithAmounts(
-      //      verifone_sdk::Decimal(2,200),
-      //      verifone_sdk::Decimal(2,300),
-      //      verifone_sdk::Decimal(2,400),
-      //      verifone_sdk::Decimal(2,500),
-      //      verifone_sdk::Decimal(2,600),
-      //      verifone_sdk::Decimal(2,700),
-      //      verifone_sdk::Decimal(2,800)
-      //    );
-      //    payment->setRequestedAmounts(amount_totals);
-      //    payment->setRequestedPaymentType(verifone_sdk::PaymentType::DEBIT);
-      //    payment->setRequestedPaymentType(verifone_sdk::PaymentType::CREDIT);
+      payment->getRequestedAmounts()->setSubtotal(sub_total);
+      payment->getRequestedAmounts()->setTax(tax);
+      //      payment->getRequestedAmounts()->setGratuity(verifone_sdk::Decimal(2, 25));
+      payment->getRequestedAmounts()->setTotal(net_total);
 
       transaction_manager->startPayment(payment);
-      //    psdk->getTransactionManager()->startPayment(payment);
       transaction_manager->endSession();
       //     transaction_manager->logout();
     }
@@ -247,6 +295,7 @@ int main()
     {
       // Session start failed to send
       std::cout << "Session start failed to send" << std::endl;
+      transaction_manager->endSession();
     }
   }
   else
