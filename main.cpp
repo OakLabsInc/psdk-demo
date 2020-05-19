@@ -32,6 +32,8 @@
 
 using json = nlohmann::json;
 
+std::shared_ptr<verifone_sdk::TransactionManager> transaction_manager;
+
 void handle_response(std::string in_status, std::string in_message)
 {
 
@@ -124,13 +126,15 @@ public:
         auto payment = event->getPayment();
         auto auth_result = payment->getAuthResult();
         handle_response("SUCCESS", "");
-        // Confirm the authorization result is AUTHORIZED instead
-        // of DECLINED or some other result.
       }
       else
       {
-        handle_response("ERROR", "");
-        // else handle failure by examining the status code and message.
+         std::optional<std::string> message = event->getMessage();
+         if( message.has_value() ) {
+           handle_response("ERROR", message.value());
+        } else {
+          handle_response("ERROR", "");
+        }
       }
     }
 
@@ -220,6 +224,7 @@ verifone_sdk::Decimal sub_total;
 verifone_sdk::Decimal tax_rate;
 verifone_sdk::Decimal tax;
 verifone_sdk::Decimal gratuity;
+verifone_sdk::Decimal donation;
 verifone_sdk::Decimal net_total;
 
 void parse_json_payload(std::string in_json_string)
@@ -230,6 +235,7 @@ void parse_json_payload(std::string in_json_string)
   tax_rate = string_to_decimal(json_payload["taxRate"]);
   tax = string_to_decimal(json_payload["tax"]);
   //  gratuity = string_to_decimal(json_payload["gratuity"]);
+  //  donation = string_to_decimal(json_payload["donation"]);
   net_total = string_to_decimal(json_payload["grandTotal"]);
 }
 
@@ -270,7 +276,8 @@ int main(int argc, char **argv)
 
   std::shared_ptr<verifone_sdk::CommerceListener> com_listener = std::make_shared<ComListener>();
 
-  if (auto transaction_manager = psdk->getTransactionManager())
+
+  if (transaction_manager = psdk->getTransactionManager())
   {
 
     auto login_status = transaction_manager->login(com_listener, std::nullopt, std::nullopt, std::nullopt);
@@ -284,7 +291,8 @@ int main(int argc, char **argv)
 
       payment->getRequestedAmounts()->setSubtotal(sub_total);
       payment->getRequestedAmounts()->setTax(tax);
-      //      payment->getRequestedAmounts()->setGratuity(verifone_sdk::Decimal(2, 25));
+      //      payment->getRequestedAmounts()->setGratuity(gratuity);
+      //      payment->getRequestedAmounts()->setDonation(donation);
       payment->getRequestedAmounts()->setTotal(net_total);
 
       transaction_manager->startPayment(payment);
