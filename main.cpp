@@ -33,7 +33,9 @@
 
 using json = nlohmann::json;
 
+//std::shared_ptr<verifone_sdk::PaymentSdkInterface> psdk;
 std::shared_ptr<verifone_sdk::TransactionManager> transaction_manager;
+std::string terminal_ip;
 
 json response_json;
 
@@ -241,7 +243,6 @@ void parse_json_payload(std::string in_json_string)
   net_total = string_to_decimal(json_payload["grandTotal"]);
 }
 
-std::string terminal_ip;
 int main(int argc, char **argv)
 {
 
@@ -280,8 +281,6 @@ int main(int argc, char **argv)
 
   std::shared_ptr<verifone_sdk::CommerceListener> com_listener = std::make_shared<ComListener>();
 
-
-//  if (transaction_manager = psdk->getTransactionManager().setDebugMode() )
   if (transaction_manager = psdk->getTransactionManager() )
   {
 
@@ -289,8 +288,6 @@ int main(int argc, char **argv)
 
     if (transaction_manager && transaction_manager->startSession(com_listener, verifone_sdk::Transaction::create()))
     {
-
-//      std::cout << "Session start was sent successfully" << std::endl;
 
       auto payment = verifone_sdk::Payment::create();
 
@@ -303,23 +300,19 @@ int main(int argc, char **argv)
       transaction_manager->startPayment(payment);
       transaction_manager->endSession();
       transaction_manager->logout();
-  psdk->tearDown();
     }
     else
     {
       // Session start failed to send
-      std::cout << "Session start failed to send" << std::endl;
+      // std::cout << "Session start failed to send" << std::endl;
       transaction_manager->endSession();
       transaction_manager->logout();
-  psdk->tearDown();
     }
   }
   else
   {
   }
 
-
-//  std::cout << response_json << std::endl;
   exit(0); 
 
 }
