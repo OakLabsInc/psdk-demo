@@ -27,6 +27,7 @@
 #include "BasketAdjustedEvent.hpp"
 #include "HostAuthorizationEvent.hpp"
 #include "PaymentCompletedEvent.hpp"
+#include "PsdkLogLevel.hpp"
 
 #include "nlohmann/json.hpp"
 
@@ -268,7 +269,10 @@ int main(int argc, char **argv)
       {verifone_sdk::PsdkDeviceInformation::DEVICE_CONNECTION_TYPE_KEY, "tcpip"}};
 
   int last_status;
+//  verifone_sdk::PaymentSdkInterface psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt))->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
+//    auto psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt))->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
   auto psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt));
+  psdk->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
   auto listener = std::make_shared<StatusListener>([&](const std::shared_ptr<verifone_sdk::Status> &status) {
     last_status = status->getStatus();
   });
@@ -287,7 +291,7 @@ int main(int argc, char **argv)
     if (transaction_manager && transaction_manager->startSession(com_listener, verifone_sdk::Transaction::create()))
     {
 
-      std::cout << "Session start was sent successfully" << std::endl;
+//      std::cout << "Session start was sent successfully" << std::endl;
 
       auto payment = verifone_sdk::Payment::create();
 
@@ -316,7 +320,7 @@ int main(int argc, char **argv)
   }
 
 
-  std::cout << response_json << std::endl;
+//  std::cout << response_json << std::endl;
   exit(0); 
 
 }
