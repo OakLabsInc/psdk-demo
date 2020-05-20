@@ -269,10 +269,6 @@ int main(int argc, char **argv)
       {verifone_sdk::PsdkDeviceInformation::DEVICE_CONNECTION_TYPE_KEY, "tcpip"}};
 
   int last_status;
-//  verifone_sdk::PaymentSdkInterface psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt))->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
-//    auto psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt))->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
-
-//  auto psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt));
   std::shared_ptr<verifone_sdk::PaymentSdkInterface> psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt));
   psdk->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
 
