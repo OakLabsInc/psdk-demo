@@ -34,6 +34,8 @@ using json = nlohmann::json;
 
 std::shared_ptr<verifone_sdk::TransactionManager> transaction_manager;
 
+json response_json;
+
 void handle_response(std::string in_status, std::string in_message)
 {
 
@@ -41,7 +43,6 @@ void handle_response(std::string in_status, std::string in_message)
   // print response
   // { status: in_status, message: in_message }
 
-  json response_json;
   response_json["status"] = in_status;
   response_json["message"] = in_message;
   
@@ -277,7 +278,8 @@ int main(int argc, char **argv)
   std::shared_ptr<verifone_sdk::CommerceListener> com_listener = std::make_shared<ComListener>();
 
 
-  if (transaction_manager = psdk->getTransactionManager())
+//  if (transaction_manager = psdk->getTransactionManager().setDebugMode() )
+  if (transaction_manager = psdk->getTransactionManager() )
   {
 
     auto login_status = transaction_manager->login(com_listener, std::nullopt, std::nullopt, std::nullopt);
@@ -297,16 +299,24 @@ int main(int argc, char **argv)
 
       transaction_manager->startPayment(payment);
       transaction_manager->endSession();
-      //     transaction_manager->logout();
+      transaction_manager->logout();
+  psdk->tearDown();
     }
     else
     {
       // Session start failed to send
       std::cout << "Session start failed to send" << std::endl;
       transaction_manager->endSession();
+      transaction_manager->logout();
+  psdk->tearDown();
     }
   }
   else
   {
   }
+
+
+  std::cout << response_json << std::endl;
+  exit(0); 
+
 }
