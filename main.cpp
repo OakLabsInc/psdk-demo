@@ -271,8 +271,11 @@ int main(int argc, char **argv)
   int last_status;
 //  verifone_sdk::PaymentSdkInterface psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt))->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
 //    auto psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt))->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
-  auto psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt));
+
+//  auto psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt));
+  std::shared_ptr<verifone_sdk::PaymentSdkInterface> psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt));
   psdk->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
+
   auto listener = std::make_shared<StatusListener>([&](const std::shared_ptr<verifone_sdk::Status> &status) {
     last_status = status->getStatus();
   });
