@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 by VeriFone, Inc.
+ * Copyright (c) 2021 by VeriFone, Inc.
  * All Rights Reserved.
  * THIS FILE CONTAINS PROPRIETARY INFORMATION
  * AND REMAINS THE PROPERTY OF VERIFONE, INC.
@@ -12,10 +12,11 @@
 #define VERIFONE_SDK_SDK_UTILITY_UUID_H_
 
 #include <string>
+#include <psdk/export.h>
 
 namespace verifone_sdk {
 
-class Uuid {
+class PSDK_EXPORT Uuid {
  public:
  static const char* kUuidRegexStr;
  static const std::string Generate();

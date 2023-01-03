@@ -27,6 +27,10 @@ enum class HostDecisionType : int {
     HOST_UNKNOWN,
     /** Host Decision Retry Pin */
     HOST_RETRY_PIN,
+    /** Host Decision Request Pin */
+    HOST_REQUEST_PIN,
+    /** Host Decision Require Pin */
+    HOST_REQUIRE_PIN,
     /** Host Decision Voice Auth */
     HOST_VOICE_AUTH,
     /** Host Decision Manual Remove */
@@ -46,6 +50,8 @@ constexpr std::string_view toString(const HostDecisionType& arg) {
         case HostDecisionType::HOST_REFERRAL: return "HOST_REFERRAL";
         case HostDecisionType::HOST_UNKNOWN: return "HOST_UNKNOWN";
         case HostDecisionType::HOST_RETRY_PIN: return "HOST_RETRY_PIN";
+        case HostDecisionType::HOST_REQUEST_PIN: return "HOST_REQUEST_PIN";
+        case HostDecisionType::HOST_REQUIRE_PIN: return "HOST_REQUIRE_PIN";
         case HostDecisionType::HOST_VOICE_AUTH: return "HOST_VOICE_AUTH";
         case HostDecisionType::HOST_MANUAL_REMOVE: return "HOST_MANUAL_REMOVE";
         case HostDecisionType::HOST_RETRY_USE_CHIP: return "HOST_RETRY_USE_CHIP";

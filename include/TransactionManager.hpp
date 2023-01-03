@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -13,11 +14,17 @@
 namespace verifone_sdk {
 
 class BasketManager;
+class CardAcquisitionRequest;
 class CommerceListener;
 class CommerceResponse;
+class DisplayOutput;
+class EncryptionRequest;
+class HostResponse;
 class LoginCredentials;
 class Payment;
+class PinRequest;
 class ReportManager;
+class RequestParameters;
 class Status;
 class StoredValueCardInformation;
 class Transaction;
@@ -25,11 +32,15 @@ class UserInputEventResponse;
 enum class ContentType;
 enum class DeliveryMethod;
 enum class DeviceManagementAction;
+enum class DisplayType;
 enum class HostDecisionType;
 enum class InputType;
 enum class PresentationMethod;
 enum class ReceiptType;
 enum class TransactionManagerState;
+struct Decimal;
+struct DeviceManagementCommand;
+struct ReaderParameters;
 
 /**
  * The service handle for performing transactions. Generally, only the 
@@ -37,7 +48,7 @@ enum class TransactionManagerState;
  * instance of this class, ensuring
  * that the proper service and binder are wrapped by this class.
  */
-class TransactionManager {
+class PSDK_EXPORT TransactionManager {
 public:
     virtual ~TransactionManager() {}
 
@@ -49,6 +60,9 @@ public:
      * or 0 to remove any preference.
      */
     static std::string const DEBUG_MODE_KEY;
+
+    /** Configure the debug mode to return stub events for testing purposes. */
+    static std::string const DEBUG_MODE_STUB_EVENT_KEY;
 
     /**
      * The debug parameters key to set how long the service should 
@@ -63,6 +77,21 @@ public:
      * in STUB mode for some use cases.
      */
     static std::string const DEBUG_FAIL_EVENT_TYPES_KEY;
+
+    /**
+     * The device parameters key to set a login timeout for the device.
+     * Please note that this does not apply to SCI terminals. 
+     */
+    static std::string const DEVICE_LOGIN_TIMEOUT_KEY;
+
+    /**
+     * The device parameters key to use encryption on messages.
+     * Set this to the #ENABLED_VALUE to enable. This defaults to no fallback to
+     * non-encrypted mode if encryption fails. Set to #ENABLED_FALLBACK_VALUE to enable
+     * with fallback to non-encrypted mode.
+     * Please note that this only applies to SCI terminals. 
+     */
+    static std::string const DEVICE_ENCRYPTION_KEY;
 
     /**
      * The device parameters key to set which port to use when connecting 
@@ -167,14 +196,39 @@ public:
      */
     static std::string const DEVICE_HOST_AUTHENTICATION_KEY;
 
+    /** Forces setup of device ID during SCA protocol negotiation */
+    static std::string const VHQ_DEVICE_ID_KEY;
+
     /** This indicates that the terminal is expected to send authentication request events */
     static std::string const DEVICE_HOST_AUTHENTICATION_ENABLED;
+
+    /**
+     * If capable, the terminal can adjust the gratuity amount of a payment which is already
+     * captured / completed.
+     */
+    static std::string const GRATUITY_ADJUSTMENT_CAPABILITY;
+
+    /** If capable, the terminal can do delayed charge transactions. */
+    static std::string const DELAYED_CHARGE_CAPABILITY;
+
+    /** If capable, the POS will support password at POS */
+    static std::string const PASSWORD_AT_POS_CAPABILITY;
+
+    /** If capable, the POS will support input confirmation */
+    static std::string const INPUT_CONFIRMATION_CAPABILITY;
 
     /**
      * The value used when enabling a specific key. Generally disabling that 
      * value can be performed by leaving it unset or setting it to an empty value.
      */
     static std::string const ENABLED_VALUE;
+
+    /**
+     * The value used when enabling an extended mode of operation but allowing fallback
+     * to the default mode of operation if the extended mode fails, example
+     * is #DEVICE_ENCRYPTION_KEY.
+     */
+    static std::string const ENABLED_FALLBACK_VALUE;
 
     /** Please use {@link #STATE_LOGGING_IN}. */
     static constexpr int32_t SESSION_SERVICE_CONNECTING = -4;
@@ -189,18 +243,22 @@ public:
     static constexpr int32_t TRANSACTION_PROCESSING = 5;
 
     /**
+     * Deprecated on 2020-06-01.
+     * Please use {@link #startSession2}.
+     */
+    virtual bool startSession(const std::shared_ptr<CommerceListener> & listener, const std::shared_ptr<Transaction> & transaction) = 0;
+
+    /**
      * Starts a session. This reserves the terminal for this application, preventing conflicts
-     * with other apps.
-     * @param listener The first listener for the session events. There may be more listeners added,
-     * but there must always be at least one registered.
+     * with other apps. A listener of CommerceListener2 should be added before calling this API.
      * @param transaction The transaction for this session.  Please note
-     * that this parameter may be null if a transaction is not required 
+     * that this parameter may be null if a transaction is not required
      * for the session.
      * @return True if the session opening message was submitted successfully. The SessionListener
      * will receive the start event if the session is created, or will receive the appropriate
      * message if the session is not able to be created.
      */
-    virtual bool startSession(const std::shared_ptr<CommerceListener> & listener, const std::shared_ptr<Transaction> & transaction) = 0;
+    virtual bool startSession2(const std::shared_ptr<Transaction> & transaction) = 0;
 
     /**
      * Not currently supported. Attempts to resume a session in the case of
@@ -213,6 +271,7 @@ public:
      * submitted successfully. The listener will
      * receive the start event if the session is created, or will receive 
      * the appropriate message if the session is not able to be created.
+     * Deprecated on 2020-06-01.
      */
     virtual bool resumeSession(const std::shared_ptr<CommerceListener> & listener, const std::string & sessionId) = 0;
 
@@ -221,6 +280,7 @@ public:
      * @param listener A listener for session events. There may be more 
      * listeners added, but there must always be at least one registered.
      * @return True if the listener was not already registered.
+     * Deprecated on 2020-06-01.
      */
     virtual bool addSessionListener(const std::shared_ptr<CommerceListener> & listener) = 0;
 
@@ -230,6 +290,7 @@ public:
      * until the session ends. 
      * @param listener A registered listener for the session events. 
      * @return True if the listener exists.
+     * Deprecated on 2020-06-01.
      */
     virtual bool removeSessionListener(const std::shared_ptr<CommerceListener> & listener) = 0;
 
@@ -239,6 +300,7 @@ public:
      * This set is independent of the internal set, and should only used 
      * as a reference for the current listeners, and
      * not be expected to update with the addition or removal of listeners.
+     * Deprecated on 2020-06-01.
      */
     virtual std::vector<std::shared_ptr<CommerceListener>> getListeners() = 0;
 
@@ -275,13 +337,12 @@ public:
     virtual std::shared_ptr<BasketManager> getBasketManager() = 0;
 
     /**
-     * Starts a payment for the current transaction. 
+     * Starts a payment for the current transaction.
      * @param payment The payment object to use. Use
-     * {@link Payment#setRequestedPaymentAmount(BigDecimal)} to define the 
-     * amount for a single payment if it should be different than the 
-     * current transaction total. Use
-     * {@link Payment#setAuthorizationMethod(Payment.AuthorizationMethod)} 
-     * to define the required authorization method for this payment.
+     * {@link Payment#setRequestedAmounts(AmountTotals)} to set the
+     * amount. Use
+     * {@link Payment#setAuthorizationMethod(Payment.AuthorizationMethod)}
+     * to define the required authorization method.
      */
     virtual std::shared_ptr<Status> startPayment(const std::shared_ptr<Payment> & payment) = 0;
 
@@ -310,12 +371,11 @@ public:
      * Activates a stored value card. Fires a {@link StoredValueCardEvent} 
      * to the listeners.
      * @param payment A payment object to provide the information needed. 
-     * Use {@link Payment#setRequestedPaymentAmount(BigDecimal)} to define 
+     * Use {@link Payment#setRequestedAmounts(AmountTotals)} to define
      * the amount to load, optionally use 
      * {@link Payment#setAuthCode(String)} to provide a
      * reference auth code, and optionally use
-     * {@link Payment#setCardInformation(CardInformation)} to
-     * provide a {@link StoredValueCardInformation} object to provide 
+     * {@link StoredValueCardInformation} object to provide
      * further information about the stored value card.
      */
     virtual std::shared_ptr<Status> activateStoredValueCard(const std::shared_ptr<Payment> & payment) = 0;
@@ -342,7 +402,8 @@ public:
      * Retrieves the current balance for a stored value card. Fires a
      * {@link StoredValueCardEvent} to the listeners.
      * @param cardInformation Optionally pass card information to use when 
-     * fetching the balance.  
+     * fetching the balance. If optional parameter is not supplied the balance
+     * request will not be restricted to particular card type.
      * Use {@link StoredValueCardInformation#setType(String)} to define
      * the type of card for which we are checking the balance. Use
      * {@link StoredValueCardInformation#setCardPan(String)} or
@@ -350,6 +411,14 @@ public:
      * the information about the card to be checked.
      */
     virtual std::shared_ptr<Status> getStoredValueCardBalance(const std::shared_ptr<StoredValueCardInformation> & cardInformation) = 0;
+
+    /**
+     * Deactivate the stored value card. Refer to
+     * {@link #activateStoredValueCard(Payment)}.
+     * @param payment If this is null or
+     * {@link Payment#getRequestedPaymentAmount()} is not set,
+     */
+    virtual std::shared_ptr<Status> deactivateStoredValueCard(const std::shared_ptr<Payment> & payment) = 0;
 
     /**
      * Presents either HTML or Text content to the customer using the customer-facing display. The
@@ -371,10 +440,10 @@ public:
     virtual std::shared_ptr<Status> presentCustomerContent(const std::string & content, ContentType contentType, int32_t minimumDisplayTime) = 0;
 
     /**
-     * Use {@link #presentUserOptions(String header, ArrayList<String> buttonLabels)} 
-     * instead.
+     * See {@link #presentCustomerContent} with new parameter displayType.
+     * @param displayType please see {@link #DisplayType}.
      */
-    virtual std::shared_ptr<Status> presentReceiptDeliveryOptions(const std::vector<DeliveryMethod> & availableDeliveryMethods, const std::string & customerPhone, const std::string & customerEmail) = 0;
+    virtual std::shared_ptr<Status> presentCustomerContent2(const std::string & content, ContentType contentType, int32_t minimumDisplayTime, DisplayType displayType) = 0;
 
     /**
      * Presents button options to the user and relaying the 
@@ -382,11 +451,11 @@ public:
      * automatically include a back/exit/cancel option.
      *
      * EPAS reference 4.5.3 Input, 4.5.3.1 Processing Overview. 
-     * For #1 Reading Confirmation (“GetAnyKey”), pass a header 
+     * For #1 Reading Confirmation ("GetAnyKey"), pass a header 
      * with a null or empty array of button labels. For #2 Asks a
-     * Question (“GetConfirmation”, “SiteManager”), pass two 
+     * Question ("GetConfirmation", "SiteManager"), pass two 
      * buttons with the appropriate values. For #4 Select an 
-     * item in a Menu (“GetMenuEntry”), pass any number of buttons.
+     * item in a Menu ("GetMenuEntry"), pass any number of buttons.
      *
      * SCA reference Customer Buttons. Automatically breaks the 
      * header into the appropriate maximum lengths using word 
@@ -422,6 +491,14 @@ public:
     virtual std::shared_ptr<Status> requestUserInput(InputType inputType, const std::string & message, const std::string & defaultValue) = 0;
 
     /**
+     * Presents the user with a screen to collect information,
+     * customizing the process based on {@link #RequestParameters}
+     * @param parameters for input screen configuration,
+     * see {@link #RequestParameters}
+     */
+    virtual std::shared_ptr<Status> requestUserInput2(const std::shared_ptr<RequestParameters> & params) = 0;
+
+    /**
      * Asks the terminal to collect card information from the user and 
      * return a token for the information. In some regions, this can also 
      * be called after the payment has started to generate a token for the 
@@ -439,21 +516,6 @@ public:
     virtual void setDebugMode(int32_t mode) = 0;
 
     /**
-     * A map of recognized debug parameters. Reference the DEBUG constants 
-     * for more information. Some regions may include additional constants 
-     * not defined in this file, but these may be recognized by the 
-     * underlying service as appropriate. Any unrecognized keys will be 
-     * ignored.
-     */
-    virtual void setDebugParams(const std::unordered_map<std::string, std::string> & debugParams) = 0;
-
-    /**
-     * Please use {@link #setDeviceParams(Map)} instead, using the 
-     * appropriate DEVICE key constants.
-     */
-    virtual void setDeviceParams(const std::unordered_map<std::string, std::string> & deviceParams) = 0;
-
-    /**
      * Adds a listener for events that occur without an active session. For 
      * example, a
      * {@link com.verifone.commerce.payment.reports.ReconciliationEvent} is 
@@ -461,6 +523,7 @@ public:
      * issued within the context of a session. Returns success if the 
      * listener was added or is already registered, and false if the 
      * listener was not registered.
+     * Deprecated on 2020-06-01.
      */
     virtual bool addGeneralListener(const std::shared_ptr<CommerceListener> & listener) = 0;
 
@@ -470,6 +533,7 @@ public:
      * {@link #addGeneralListener(CommerceListener)} for more information.
      * Returns success if the listener was removed or is not registered, 
      * and false if the listener was not able to be removed.
+     * Deprecated on 2020-06-01.
      */
     virtual bool removeGeneralListener(const std::shared_ptr<CommerceListener> & listener) = 0;
 
@@ -492,11 +556,26 @@ public:
     virtual std::shared_ptr<Status> abort() = 0;
 
     /**
+     * Abort with a message to the Customer
+     * @param message {@link com.verifone.commerce.entities.DisplayOutput}
+     * @return A status object indicating if the command was issued
+     * properly. Events regarding the effect of the command are sent to the
+     * registered listener(s).
+     */
+    virtual std::shared_ptr<Status> abort2(const std::shared_ptr<DisplayOutput> & message) = 0;
+
+    /**
      * Checks if the current terminal implementation allows handling of a 
      * specific command, as listed in the constants above. Returns true if 
      * the interface can handle the command, or false if not.
      */
     virtual bool isCapable(const std::string & capability) = 0;
+
+    /**
+     * Checks if PSDK has a card acquisition reference saved
+     * Returns true if saved, or false if not.
+     */
+    virtual bool hasCollectedCardData() const = 0;
 
     /**
      * Logs in through the payment terminal, possibly synchronizing 
@@ -522,6 +601,8 @@ public:
      * @return A status code. Returns success or failure of sending the request to the terminal. 
      * The actual result will be sent using the notification described 
      * earlier.
+     * Deprecated on 2020-06-01.
+     * Please use {@link #loginWithCredentials}.
      */
     virtual std::shared_ptr<Status> login(const std::shared_ptr<CommerceListener> & listener, const std::optional<std::string> & userId, const std::optional<std::string> & password, const std::optional<std::string> & shiftNumber) = 0;
 
@@ -573,12 +654,6 @@ public:
     virtual std::shared_ptr<Status> sendInputResponse(const std::shared_ptr<UserInputEventResponse> & user_input_event_response) = 0;
 
     /**
-     * Formerly returned the status when printing something on behalf of 
-     * the terminal.
-     */
-    virtual std::shared_ptr<Status> sendPrintResponse(const std::string & result) = 0;
-
-    /**
      * Request information about card data from terminal
      * @param message The message to be displayed in terminal
      * @param inputMethods array of 
@@ -590,14 +665,31 @@ public:
     virtual std::shared_ptr<Status> requestCardData(const std::string & message, const std::vector<PresentationMethod> & presentationMethodNames) = 0;
 
     /**
+     * Request information about card data from terminal
+     * @param cardAcquisitionRequest {@link com.verifone.commerce.entities.CardAcquisitionRequest}
+     */
+    virtual std::shared_ptr<Status> requestCardData2(const std::shared_ptr<CardAcquisitionRequest> & cardAcquisitionRequest) = 0;
+
+    /**
+     * Request information about card data from terminal
+     * @param message The message to be displayed in terminal
+     * @param inputMethods array of
+     * {@link
+     * com.verifone.commerce.entities.CardInformation.PresentationMethod},
+     * @param list of AID(Application ID) strings.
+     * @return The status of the request to the terminal.
+     */
+    virtual std::shared_ptr<Status> requestCardDataWithAids(const std::string & message, const std::vector<PresentationMethod> & presentationMethodNames, const std::vector<std::string> & aidList) = 0;
+
+    /**
      * Sends back the response to a specific event, allowing the POS to 
      * asynchronously respond to received events.
      */
     virtual std::shared_ptr<Status> sendEventResponse(const std::shared_ptr<CommerceResponse> & response) = 0;
 
     /**
-     * Retrieves information on the device, sending a 
-     * DeviceInformationReceivedEvent to the listener.
+     * Deprecated on 2020-06-15.
+     * Please use {@link PaymentSdk#getDeviceInformation()} instead.
      */
     virtual std::shared_ptr<Status> getDeviceInformation() = 0;
 
@@ -607,14 +699,66 @@ public:
      */
     virtual std::shared_ptr<Status> reprintReceipt(const std::shared_ptr<Payment> & payment, ReceiptType receiptType, DeliveryMethod receiptDeliveryMethod, const std::optional<std::string> & deliveryAddress) = 0;
 
-    /** Sends back the response to a host authorization request */
-    virtual std::shared_ptr<Status> respondToHostAuthorization(const std::string & authorizationCode, HostDecisionType hostDecision, const std::unordered_map<std::string, std::string> & emvTags) = 0;
+    /**
+     * Sends back the response to a host authorization request.
+     * @param authorizationCode The Authorization code sent from the host.
+     * @param hostDecision Enum representing the Hosts decision for the request see {@link HostDecisionType}.
+     * @param emvTags EMV Tags to be sent to the POI deviceAuthAmount.
+     * @param authAmount The amount which has been authorized, including, if applicable, the approved cashback amount. Optional.
+     * Note: When this parameter is omitted but the transaction has been authorized, the result will be an partial authorization
+     * with a zero amount.
+     */
+    virtual std::shared_ptr<Status> respondToHostAuthorization(const std::string & authorizationCode, HostDecisionType hostDecision, const std::unordered_map<std::string, std::string> & emvTags, const std::optional<Decimal> & authAmount) = 0;
 
-    /** Sends back the response to a finalize transaction request */
-    virtual std::shared_ptr<Status> respondToHostFinalizeTransaction(const std::string & authorizationCode, HostDecisionType hostDecision, const std::unordered_map<std::string, std::string> & emvTags) = 0;
+    /**
+     * Sends back the response to a finalize transaction request
+     * @param authorizationCode The Authorization code sent from the host.
+     * @param hostDecision Enum representing the Hosts decision for the request see {@link HostDecisionType}.
+     * @param emvTags EMV Tags to be sent to the POI deviceAuthAmount.
+     * @param authAmount The amount which has been authorized, including, if applicable, the approved cashback amount. Optional.
+     * Note: When this parameter is omitted but the transaction has been authorized, the result will be an partial authorization
+     * with a zero amount.
+     */
+    virtual std::shared_ptr<Status> respondToHostFinalizeTransaction(const std::string & authorizationCode, HostDecisionType hostDecision, const std::unordered_map<std::string, std::string> & emvTags, const std::optional<Decimal> & authAmount) = 0;
+
+    /** Sends back the response to either a host authorization request or a finalize transaction request. See {@link HostResponse} */
+    virtual std::shared_ptr<Status> sendHostResponse(const std::shared_ptr<HostResponse> & hostResponse) = 0;
 
     /** Perform device management action */
     virtual std::shared_ptr<Status> performDeviceManagement(DeviceManagementAction deviceManagementAction) = 0;
+
+    /** Perform device management action with parameters */
+    virtual std::shared_ptr<Status> performDeviceManagementCommand(const DeviceManagementCommand & deviceManagementCommand) = 0;
+
+    /** Encrypt an item. See {@link EncryptionRequest} for more information. */
+    virtual std::shared_ptr<Status> performEncryption(const std::shared_ptr<EncryptionRequest> & encryptionToPerform) = 0;
+
+    /**
+     * Based on DeliveryMethod settings and terminal capabilities, print the document on the
+     * terminal or send through SMS/Email.
+     * @param document The document to be printed on the terminal.
+     * @param contentType {@link ContentType}.
+     * @param receiptType  optional. {@link ReceiptType}.
+     * @param receiptDeliveryMethod optional. {@link DeliveryMethod}.
+     * @param deliveryAddress optional.
+     * @return The status of the print request to the terminal.
+     */
+    virtual std::shared_ptr<Status> print(const std::string & document, ContentType contentType, std::optional<ReceiptType> receiptType, std::optional<DeliveryMethod> receiptDeliveryMethod, const std::optional<std::string> & deliveryAddress) = 0;
+
+    /**
+     * Activates the Contact, Contactless, and Mag-stripe readers on the device. The 
+     * listener receives a CardInformationReceivedEvent if the customer presents something.
+     */
+    virtual void enableReader(const ReaderParameters & parameters) = 0;
+
+    /** Request device vitals. {@link DeviceVitals}. */
+    virtual std::shared_ptr<Status> requestDeviceVitals() = 0;
+
+    /** Perform PIN processing action  */
+    virtual std::shared_ptr<Status> performPin(const std::shared_ptr<PinRequest> & pinRequest) = 0;
+
+    /** Set optional capabilities that the POS will support */
+    virtual void setCapabilities(const std::unordered_map<std::string, std::string> & config) = 0;
 };
 
 }  // namespace verifone_sdk

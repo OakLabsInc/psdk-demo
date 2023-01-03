@@ -6,18 +6,21 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
 
+class CardInformation;
 class Payment;
 class StoredValueCardInformation;
 class Transaction;
 class TransactionEventResponse;
+enum class AuthorizationResult;
 struct Decimal;
 
 /** An event fired for all interactions with a stored value card. */
-class StoredValueCardEvent {
+class PSDK_EXPORT StoredValueCardEvent {
 public:
     virtual ~StoredValueCardEvent() {}
 
@@ -60,6 +63,9 @@ public:
      * A stored value card balance has not been retrieved.
      */
     static std::string const STORED_VALUE_CARD_BALANCE_RETRIEVAL_FAILED;
+
+    /** A stored value card has been successfully deactivated. */
+    static std::string const STORED_VALUE_CARD_DEACTIVATED;
 
     /**
      * A user-readable message.
@@ -110,8 +116,20 @@ public:
     /** A convenient method to retrieve the available balance from the card information, if available. */
     virtual std::optional<Decimal> getAvailableBalance() const = 0;
 
+    /** A convenient method to retrieve the previous balance from the card information, if available. */
+    virtual std::optional<Decimal> getPreviousBalance() const = 0;
+
     /** A convenient method to retrieve the amount due back to the customer. */
     virtual std::optional<Decimal> getCashbackAmount() const = 0;
+
+    /** Get card information for non gift cards */
+    virtual std::shared_ptr<CardInformation> getCardInformation() const = 0;
+
+    /**
+     * Get result of stored value authorization. This is provided by the payment
+     * application or payment service provider. This may be empty. 
+     */
+    virtual std::optional<AuthorizationResult> getAuthResult() const = 0;
 };
 
 }  // namespace verifone_sdk

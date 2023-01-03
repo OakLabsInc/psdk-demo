@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -20,7 +21,7 @@ class TransactionQuery;
  * settlement/reconciliation with the host/acquirer(s). Please note that the events for these
  * methods are sent to general listeners, as these commands are sent outside of the context of a session.
  */
-class ReportManager {
+class PSDK_EXPORT ReportManager {
 public:
     virtual ~ReportManager() {}
 
@@ -58,8 +59,8 @@ public:
     static std::string const PREVIOUS_RECONCILIATION_CAPABILITY;
 
     /**
-     * If capable, this can query transactions.
-     * {@link #getActiveTotals()}.
+     * If capable, this can query transactions when calling
+     * {@link #queryTransactions(TransactionQuery)}.
      */
     static std::string const TRANSACTION_QUERY_CAPABILITY;
 
@@ -69,10 +70,16 @@ public:
      */
     static std::string const TOTALS_GROUP_ID_CAPABILITY;
 
-    /** If capable, this can close current period and reconcile */
+    /**
+     * If capable, this can close current period and reconcile when calling
+     * {@link #closePeriodAndReconcile()}.
+     */
     static std::string const CLOSE_PERIOD_AND_RECONCILE_CAPABILITY;
 
-    /** If capable, this will allow you to get previous reconciliation */
+    /**
+     * If capable, this will allow you to get previous reconciliation when calling
+     * {@link #getPreviousReconciliation(String)}.
+     */
     static std::string const GET_PREVIOUS_RECONCILIATION_CAPABILITY;
 
     /**
@@ -82,9 +89,32 @@ public:
     static std::string const RECONCILIATION_LIST_CAPABILITY;
 
     /**
-     * Checks if the current terminal interface allows handling of a specific
-     * command, as listed in the constants above. Returns true if the interface can
-     * handle the command, or false if not.
+     * If capable, the terminal can provide a reconciliations report which is 
+     * requested by the POS when calling {@link #loginWithCredentials()}.
+     */
+    static std::string const RECONCILIATION_REPORT_CAPABILITY;
+
+    /**
+     * Checks if the current terminal interface allows handling of 
+     * a specific command, as itemized below. Returns true if the 
+     * interface can handle the command, or false if not.
+     * The following are the commands whose capabilities
+     * may be checked via this command:
+     * {@link #GET_ACTIVE_TOTALS_CAPABILITY},
+     * {@link #GET_GROUP_TOTALS_CAPABILITY},
+     * {@link #CLOSE_PERIOD_CAPABILITY},
+     * {@link #TERMINAL_RECONCILIATION_CAPABILITY},
+     * {@link #ACQUIRER_RECONCILIATION_CAPABILITY},
+     * {@link #PREVIOUS_RECONCILIATION_CAPABILITY},
+     * {@link #TRANSACTION_QUERY_CAPABILITY},
+     * {@link #TRANSACTION_QUERY_BY_PAYMENT_CAPABILITY},
+     * {@link #TRANSACTION_QUERY_FILTER_FIELDS_CAPABILITY},
+     * {@link #TRANSACTION_QUERY_PAYMENT_ID_BOUNDS_CAPABILITY},
+     * {@link #TOTALS_GROUP_ID_CAPABILITY},
+     * {@link #CLOSE_PERIOD_AND_RECONCILE_CAPABILITY},
+     * {@link #GET_PREVIOUS_RECONCILIATION_CAPABILITY},
+     * {@link #RECONCILIATION_LIST_CAPABILITY},
+     * {@link #RECONCILIATION_REPORT_CAPABILITY}.
      */
     virtual bool isCapable(const std::string & capability) = 0;
 
@@ -99,15 +129,18 @@ public:
      */
     virtual std::shared_ptr<Status> getActiveTotals() = 0;
 
+    /** Provides capability to specify items to search for in {@link #getActiveTotals()}. */
+    virtual std::shared_ptr<Status> getActiveTotalsWithQuery(const std::shared_ptr<TransactionQuery> & query) = 0;
+
     /**
      * Provides the transactions totals for a specific Totals Group ID, as
-     * specified on the payment object. When getTotalsForGroupId is called
+     * specified on the payment object. When getTotalsForGroup is called
      * with a null group ID, the most recent group ID is used by default,
      * and if there is no recent group ID, then an error is returned.
      * Fires a {@link ReconciliationEvent} with type {@link ReconciliationEvent#GROUP_TOTALS_TYPE}
      * to the listener.
      */
-    virtual std::shared_ptr<Status> getTotalsForGroup(const std::string & groupId) = 0;
+    virtual std::shared_ptr<Status> getTotalsForGroup(const std::optional<std::string> & groupId) = 0;
 
     /**
      * When the terminal tracks reporting periods, this closes the current period and
@@ -126,7 +159,7 @@ public:
      * @return The success/failure for sending the command. Registered listeners will
      * receive the actual result.
      */
-    virtual std::shared_ptr<Status> closePeriodAndReconcile(const std::vector<int32_t> & acquirers) = 0;
+    virtual std::shared_ptr<Status> closePeriodAndReconcile(const std::optional<std::vector<int32_t>> & acquirers) = 0;
 
     /**
      * Reconciles the terminal or host with the acquirer(s). Fires a
@@ -139,7 +172,7 @@ public:
      * @return The success/failure for sending the command. Registered listeners will
      * receive the actual result.
      */
-    virtual std::shared_ptr<Status> reconcileWithAcquirers(const std::vector<int32_t> & acquirers) = 0;
+    virtual std::shared_ptr<Status> reconcileWithAcquirers(const std::optional<std::vector<int32_t>> & acquirers) = 0;
 
     /**
      * Retrieves a list of reconciliations that have either already been performed or are currently

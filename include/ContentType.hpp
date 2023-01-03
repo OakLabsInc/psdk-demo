@@ -21,15 +21,20 @@ enum class ContentType : int {
      * display or get input from the cashier.
      */
     TEXT,
-    /**MAX_COUNT */
-    MAX_COUNT,
+    /**
+     * Uses one of the constants defined in {@link PredefinedReferenceId} or a
+     * custom value pre-configured on the terminal for this estate. This is only
+     * used when the POS requests to display text on the terminal, not when the
+     * terminal requests text to be displayed on the POS.
+     */
+    PREDEFINED,
 };
 
 constexpr std::string_view toString(const ContentType& arg) {
     switch(arg) {
         case ContentType::HTML: return "HTML";
         case ContentType::TEXT: return "TEXT";
-        case ContentType::MAX_COUNT: return "MAX_COUNT";
+        case ContentType::PREDEFINED: return "PREDEFINED";
         default: return "ContentType enum value not supported";
     }
 }

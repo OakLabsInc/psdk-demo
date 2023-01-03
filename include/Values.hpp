@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -16,7 +17,7 @@ enum class InputType;
 struct Decimal;
 
 /** Values collected by the terminal. */
-class Values {
+class PSDK_EXPORT Values {
 public:
     virtual ~Values() {}
 
@@ -28,6 +29,9 @@ public:
      * {@link InputType#EMAIL},
      * {@link InputType#PASSWORD}, or
      * {@link InputType#TEXT}.
+     * If the InputType is InputType#NUMBER and the input is phone number
+     * entered with a leading '+' symbol or '0' or just numeric phone number,
+     * this contains the full value as entered by the user.
      */
     virtual std::optional<std::string> getValue() const = 0;
 
@@ -37,7 +41,7 @@ public:
      * {@link InputType#PASSWORD}, or
      * {@link InputType#TEXT}.
      */
-    virtual void setValue(const std::string & value) = 0;
+    virtual void setValue(const std::optional<std::string> & value) = 0;
 
     /**
      * Gets the response value when the Input Type is
@@ -70,6 +74,7 @@ public:
     /**
      * Used when the Input Type is {@link InputType#MENU_OPTIONS} to
      * provide back the selected index from the options.
+     * a negative number means to go back to a previous menu
      */
     virtual void setSelectedIndices(const std::vector<int32_t> & indices) = 0;
 

@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -15,7 +16,7 @@ class Transaction;
 class TransactionEventResponse;
 
 /** Contains the value from customer input on the terminal. */
-class CardInformationReceivedEvent {
+class PSDK_EXPORT CardInformationReceivedEvent {
 public:
     virtual ~CardInformationReceivedEvent() {}
 

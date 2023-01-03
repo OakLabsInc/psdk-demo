@@ -5,11 +5,12 @@
 
 #include <cstdint>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
 
-class AccessibilityModeStatus {
+class PSDK_EXPORT AccessibilityModeStatus {
 public:
     virtual ~AccessibilityModeStatus() {}
 

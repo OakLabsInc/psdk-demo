@@ -6,19 +6,22 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
 namespace verifone_sdk {
 
+class CardInformation;
 class Payment;
+struct Decimal;
 
 /**
  * Allows the payment terminal transaction status to be queried. The most recent transaction can
  * always be queried, but the capability checks are extremely important for other types of queries,
  * as the support for these queries will vary between regions and hosts.
  */
-class TransactionQuery {
+class PSDK_EXPORT TransactionQuery {
 public:
     virtual ~TransactionQuery() {}
 
@@ -33,6 +36,12 @@ public:
 
     /** factory methord to create TransactionQuery instance */
     static std::shared_ptr<TransactionQuery> create();
+
+    /**
+     * Search for a CardInformation with the card number. This can be further modified to help search 
+     * using various CardInformation properties as well
+     */
+    virtual void setCardInformation(const std::shared_ptr<CardInformation> & cardInformation) = 0;
 
     /** Optionally set a start time in milliseconds from Epoch. */
     virtual void setStartTime(std::optional<int64_t> startTime) = 0;
@@ -104,6 +113,12 @@ public:
      */
     virtual void removePayment(const std::shared_ptr<Payment> & payment) = 0;
 
+    /** Sets the query to retrieve transactions for all POS systems connected to the Payment Application */
+    virtual void setAllPos(std::optional<bool> allPos) = 0;
+
+    /** Sets the query to retrieve transactions using the request command as one of the search criteria. */
+    virtual void setSearchWithCommand(std::optional<bool> searchWithCommand) = 0;
+
     /**
      * Allows the results to be filtered to only retrieve a certain subset of fields. This does not
      * guarantee the presence of a specific field, as the query may not be able to provide that
@@ -132,7 +147,7 @@ public:
      */
     virtual void setUserId(const std::optional<std::string> & userId) = 0;
 
-    /** Limit the query to only return this many results. A limit of <= 0 means no limit. */
+    /** Limit the query to only return this many results. A limit of 0 or less means no limit. */
     virtual void setLimit(std::optional<int32_t> limit) = 0;
 
     /**
@@ -147,6 +162,51 @@ public:
      * still being processed or is complete.
      */
     virtual void setQueryingLastTransaction(bool isQueryingLastTransaction) = 0;
+
+    /** Optionally set SaleNote value for transaction to match. */
+    virtual void setSaleNote(const std::optional<std::string> & saleNote) = 0;
+
+    /** Optionally set CustomerNote value for transaction to match. */
+    virtual void setCustomerNote(const std::optional<std::string> & customerNote) = 0;
+
+    /** Optionally set a expiry start time in milliseconds from Epoch. Used in pre-auth transactions. */
+    virtual void setExpiryStartTime(std::optional<int64_t> expiryStartTime) = 0;
+
+    /** Optionally set a expiry end time in milliseconds from Epoch. Used in pre-auth transactions. */
+    virtual void setExpiryEndTime(std::optional<int64_t> expiryEndTime) = 0;
+
+    /**
+     * Optionally set a terminal ID to query the transactions linked to a specific terminal.
+     * Terminal ID is acquirer terminal ID.
+     */
+    virtual void setTerminalId(const std::optional<std::string> & terminalId) = 0;
+
+    /**
+     * Optionally set a merchant ID to query the transactions linked to a specific merchant.
+     * Merchant ID is acquirer merchant ID.
+     */
+    virtual void setMerchantId(const std::optional<std::string> & merchantId) = 0;
+
+    /**
+     * Optionally set the reconciliation ID (otherwise known as a batch ID) to get all of the
+     * transactions within a batch.
+     */
+    virtual void setReconciliationId(const std::optional<std::string> & reconciliationId) = 0;
+
+    /** Optionally set the starting transaction amount to query. */
+    virtual void setStartTransAmount(const std::optional<Decimal> & startTransAmt) = 0;
+
+    /** Optionally set the ending transaction amount to query. */
+    virtual void setEndTransAmount(const std::optional<Decimal> & endTransAmt) = 0;
+
+    /** Optionally set the starting TransactionId (nexo) or Troutd (SCA) to query. */
+    virtual void setStartTransactionId(const std::optional<std::string> & startTransId) = 0;
+
+    /** Optionally set the ending TransactionId (nexo) or Troutd (SCA) to query. */
+    virtual void setEndTransactionId(const std::optional<std::string> & endTransId) = 0;
+
+    /** Refer to {@link #setCardInformation(Collection)}. */
+    virtual std::shared_ptr<CardInformation> getCardInformation() const = 0;
 
     /** A unique identifier for this query. */
     virtual std::optional<std::string> getQueryId() const = 0;
@@ -181,6 +241,12 @@ public:
     /** Refer to {@link #setFieldsToRetrieve(Collection)}. */
     virtual std::vector<std::string> getFieldsToRetrieve() const = 0;
 
+    /** Refer to {@link #setAllPos(boolean)}. */
+    virtual std::optional<bool> isAllPos() const = 0;
+
+    /** Refer to {@link #setSearchWithCommand(boolean)}. */
+    virtual std::optional<bool> isSearchingWithCommand() const = 0;
+
     /** Refer to {@link #setOffline(boolean)}. */
     virtual std::optional<bool> isOffline() const = 0;
 
@@ -198,6 +264,45 @@ public:
 
     /** Returns true if this is simply retrieving the information on the most recent transaction. */
     virtual bool isQueryingLastTransaction() const = 0;
+
+    /** Refer to {@link #setSaleNote(String)}. */
+    virtual std::optional<std::string> getSaleNote() const = 0;
+
+    /** Refer to {@link #setCustomerNote(String)}. */
+    virtual std::optional<std::string> getCustomerNote() const = 0;
+
+    /**
+     * Gets the expiry start time in milliseconds from Epoch if it is set.
+     * Refer to {@link #setExpiryStartTime(long)}.
+     */
+    virtual std::optional<int64_t> getExpiryStartTime() const = 0;
+
+    /**
+     * Gets the expiry end time in milliseconds from Epoch if it is set.
+     * Refer to {@link #setExpiryEndTime(long)}.
+     */
+    virtual std::optional<int64_t> getExpiryEndTime() const = 0;
+
+    /** Refer to {@link #setTerminalId(String)}. */
+    virtual std::optional<std::string> getTerminalId() const = 0;
+
+    /** Refer to {@link #setMerchantId(String)}. */
+    virtual std::optional<std::string> getMerchantId() const = 0;
+
+    /** Refer to {@link #setReconciliationId(String)}. */
+    virtual std::optional<std::string> getReconciliationId() const = 0;
+
+    /** Refer to {@link #setStartTransAmount(Decimal)}. */
+    virtual std::optional<Decimal> getStartTransAmount() const = 0;
+
+    /** Refer to {@link #setEndTransAmount(Decimal)}. */
+    virtual std::optional<Decimal> getEndTransAmount() const = 0;
+
+    /** Refer to {@link #setStartTransactionId(String)}. */
+    virtual std::optional<std::string> getStartTransactionId() const = 0;
+
+    /** Refer to {@link #setEndTransactionId(String)}. */
+    virtual std::optional<std::string> getEndTransactionId() const = 0;
 };
 
 }  // namespace verifone_sdk

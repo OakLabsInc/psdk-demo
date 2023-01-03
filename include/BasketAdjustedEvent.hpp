@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -20,7 +21,7 @@ class Transaction;
  * {@link com.verifone.commerce.triggers.BasketAdjustmentRequest} Trigger, this event is sent to
  * allow the recipient to decide which adjustments will be actually applied and which will not.
  */
-class BasketAdjustedEvent {
+class PSDK_EXPORT BasketAdjustedEvent {
 public:
     virtual ~BasketAdjustedEvent() {}
 

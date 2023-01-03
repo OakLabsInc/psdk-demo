@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -23,7 +24,7 @@ class Transaction;
  * application to keep track of changes and provides the opportunity to decide
  * which adjustments are applied in the response.
  */
-class AmountAdjustedEvent {
+class PSDK_EXPORT AmountAdjustedEvent {
 public:
     virtual ~AmountAdjustedEvent() {}
 
@@ -59,6 +60,12 @@ public:
 
     /** Generate amount adjusted event response */
     virtual std::shared_ptr<AmountAdjustedEventResponse> generateAmountAdjustedEventResponse() const = 0;
+
+    /**
+     * Return boolean indicating that the event occurred
+     * during payment hence is a PaymentAdjustedEvent
+     */
+    virtual bool isPaymentAdjustedEvent() const = 0;
 };
 
 }  // namespace verifone_sdk

@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -17,7 +18,7 @@ class TransactionEventResponse;
  * The listener interface for session events. More than one listener may be registered with a
  * session, but there must always be at least one listener.
  */
-class TransactionEvent {
+class PSDK_EXPORT TransactionEvent {
 public:
     virtual ~TransactionEvent() {}
 
@@ -63,6 +64,9 @@ public:
      * or a transaction.
      */
     static std::string const RECEIPT_REPRINTED;
+
+    /** The event type when receipt is printed. */
+    static std::string const RECEIPT_PRINTED;
 
     /** Return message from event */
     virtual std::optional<std::string> getMessage() const = 0;

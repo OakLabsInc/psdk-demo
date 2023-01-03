@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -14,10 +15,11 @@ class CommerceResponse;
 class Transaction;
 class TransactionEventResponse;
 class Values;
+enum class InputSubcommand;
 enum class InputType;
 
 /** Contains the response for an UserInputEvent */
-class UserInputEventResponse {
+class PSDK_EXPORT UserInputEventResponse {
 public:
     virtual ~UserInputEventResponse() {}
 
@@ -27,8 +29,11 @@ public:
     /** Generate CommerceResponse from the provided response */
     static std::shared_ptr<CommerceResponse> asCommerceResponse(const std::shared_ptr<UserInputEventResponse> & userInputEventResponse);
 
-    /** Returns the Response Input types */
-    virtual InputType getResponseInputType() const = 0;
+    /** Returns the requested input type */
+    virtual std::optional<InputType> getResponseInputType() const = 0;
+
+    /** Returns the requested input subcommand */
+    virtual std::optional<InputSubcommand> getResponseInputSubcommand() const = 0;
 
     /** Returns the Response values */
     virtual std::shared_ptr<Values> getResponseValues() const = 0;
@@ -60,6 +65,12 @@ public:
      */
     virtual void setMessage(const std::optional<std::string> & message) = 0;
 
+    /** Get InternalData - mainly for legacy POS support */
+    virtual std::optional<std::string> getInternalData() const = 0;
+
+    /** Set InternalData - mainly for legacy POS support */
+    virtual void setInternalData(const std::optional<std::string> & data) = 0;
+
     /** Returns invoice id from event */
     virtual std::optional<std::string> getInvoiceId() const = 0;
 
@@ -68,6 +79,12 @@ public:
 
     /** Update transaction from response */
     virtual void updateTransaction(const std::shared_ptr<Transaction> & transaction) = 0;
+
+    /** Set timedout */
+    virtual void setTimedOut() = 0;
+
+    /** Set cancelled */
+    virtual void setCancelled() = 0;
 };
 
 }  // namespace verifone_sdk

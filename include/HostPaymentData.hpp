@@ -6,6 +6,7 @@
 #include "CardEncryptionType.hpp"
 #include "InstrumentType.hpp"
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -18,7 +19,7 @@ namespace verifone_sdk {
  * card and the authentication details (e.g. the actual signature or the encrypted PIN block if
  * captured).
  */
-struct HostPaymentData final {
+struct PSDK_EXPORT HostPaymentData final {
     /** Customer Billing Address Street */
     std::optional<std::string> billingStreet;
     /**
@@ -78,11 +79,16 @@ struct HostPaymentData final {
      */
     std::optional<std::unordered_map<std::string, std::string>> cardDataEmvTags;
     /**
+     * VCL AES-DUKPT encryption requires the use of eParms which is an additional blob of
+     * encrypted data associated with the encrypted track data.
+     */
+    std::optional<std::string> cardDataEparms;
+    /**
      * Encryption Type
      *   {@link #CardEncryptionType()}
      */
     std::optional<CardEncryptionType> cardDataEncryptionType;
-    /** <Encrypted Blob> Base-64 converted variable length blob. */
+    /** Encrypted Blob Base-64 converted variable length blob. */
     std::optional<std::string> cardDataTrack2;
     /**
      * Track2 Key Serial Number
@@ -131,6 +137,7 @@ struct HostPaymentData final {
                     std::optional<InstrumentType> instrumentType_,
                     std::optional<std::string> maskedCardNumber_,
                     std::optional<std::unordered_map<std::string, std::string>> cardDataEmvTags_,
+                    std::optional<std::string> cardDataEparms_,
                     std::optional<CardEncryptionType> cardDataEncryptionType_,
                     std::optional<std::string> cardDataTrack2_,
                     std::optional<std::string> cardDataTrack2Ksn_,
@@ -152,6 +159,7 @@ struct HostPaymentData final {
     , instrumentType(std::move(instrumentType_))
     , maskedCardNumber(std::move(maskedCardNumber_))
     , cardDataEmvTags(std::move(cardDataEmvTags_))
+    , cardDataEparms(std::move(cardDataEparms_))
     , cardDataEncryptionType(std::move(cardDataEncryptionType_))
     , cardDataTrack2(std::move(cardDataTrack2_))
     , cardDataTrack2Ksn(std::move(cardDataTrack2Ksn_))

@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <utility>
 
@@ -15,7 +16,7 @@ namespace verifone_sdk {
  * meaning within the Merchant's systems or POS. This object may contain additional properties,
  * but these will not be indexed for search.
  */
-struct HostSalesData final {
+struct PSDK_EXPORT HostSalesData final {
     /** An identifier from the POS or third-party for this transaction. */
     std::optional<std::string> salesIdentifier;
     /** A reference number used by card acceptor for this transaction. */
@@ -25,7 +26,7 @@ struct HostSalesData final {
      * one to one
      */
     std::optional<std::string> storeIdentifier;
-    /** Optional.The invoice number to track this payment. <= 127 characters */
+    /** Optional.The invoice number to track this payment. Must be less than 128 characters. */
     std::optional<std::string> invoiceNumber;
     /** An identifier to represent the cashier who performed the transaction at the POS. */
     std::optional<std::string> cashierId;
@@ -38,7 +39,7 @@ struct HostSalesData final {
     std::optional<std::string> laneNumber;
     /**
      * A shift number identifier used by the Card Acceptor to associate with the transaction.
-     * <= 999
+     * Must be less than 1000.
      */
     std::optional<int32_t> shiftNumber;
 

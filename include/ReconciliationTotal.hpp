@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -17,7 +18,7 @@ struct Decimal;
  * The Reconciliation total is useful for generating a Z report when the type is {@link #TYPE},
  * or an X report when the type is {@link #ACTIVE_TOTALS_TYPE}.
  */
-class ReconciliationTotal {
+class PSDK_EXPORT ReconciliationTotal {
 public:
     virtual ~ReconciliationTotal() {}
 
@@ -53,6 +54,18 @@ public:
      */
     virtual Decimal getAmount() const = 0;
 
+    /** get the cashback amount. */
+    virtual std::optional<Decimal> getCashbackAmount() const = 0;
+
+    /** get the tip amount. */
+    virtual std::optional<Decimal> getTipAmount() const = 0;
+
+    /** get the total charge amount. */
+    virtual std::optional<Decimal> getChargeTotalAmount() const = 0;
+
+    /** Returns the request command issued for this reconciliation. */
+    virtual std::optional<std::string> getRequestCommand() const = 0;
+
     /** Returns the count of transactions. */
     virtual int32_t getCount() const = 0;
 
@@ -68,6 +81,9 @@ public:
 
     /** Returns the TotalsGroupId of transactions. */
     virtual std::optional<std::string> getTotalsGroupId() const = 0;
+
+    /** Returns the CardBrand of transactions. */
+    virtual std::optional<std::string> getCardBrand() const = 0;
 };
 
 }  // namespace verifone_sdk

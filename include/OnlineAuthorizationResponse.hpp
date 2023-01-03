@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -14,7 +15,7 @@ class Transaction;
 class TransactionEventResponse;
 
 /** Response for online authorization */
-class OnlineAuthorizationResponse {
+class PSDK_EXPORT OnlineAuthorizationResponse {
 public:
     virtual ~OnlineAuthorizationResponse() {}
 

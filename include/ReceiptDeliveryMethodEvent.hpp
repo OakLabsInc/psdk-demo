@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -18,7 +19,7 @@ enum class DeliveryMethod;
  * Contains the selected delivery method and, if relevant, the input value when asking the
  * customer to select from a list of receipt delivery options.
  */
-class ReceiptDeliveryMethodEvent {
+class PSDK_EXPORT ReceiptDeliveryMethodEvent {
 public:
     virtual ~ReceiptDeliveryMethodEvent() {}
 

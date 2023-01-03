@@ -59,8 +59,11 @@ enum class InputType : int {
      * {@link #requestUserInput(InputType, String, String)}.     
      */
     MENU_OPTIONS,
-    /** MAX_COUNT */
-    MAX_COUNT,
+    /**
+     * Input type to present a currency
+     * {@link #requestUserInput(InputType, String, String)}.     
+     */
+    CURRENCY,
 };
 
 constexpr std::string_view toString(const InputType& arg) {
@@ -75,7 +78,7 @@ constexpr std::string_view toString(const InputType& arg) {
         case InputType::MANAGER_APPROVAL: return "MANAGER_APPROVAL";
         case InputType::ANY_KEY: return "ANY_KEY";
         case InputType::MENU_OPTIONS: return "MENU_OPTIONS";
-        case InputType::MAX_COUNT: return "MAX_COUNT";
+        case InputType::CURRENCY: return "CURRENCY";
         default: return "InputType enum value not supported";
     }
 }

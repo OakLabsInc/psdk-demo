@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -16,7 +17,7 @@ class Payment;
 class Transaction;
 class TransactionEventResponse;
 
-class AmountAdjustedEventResponse {
+class PSDK_EXPORT AmountAdjustedEventResponse {
 public:
     virtual ~AmountAdjustedEventResponse() {}
 

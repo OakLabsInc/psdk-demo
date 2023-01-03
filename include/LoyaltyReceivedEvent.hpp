@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -23,7 +24,7 @@ class Transaction;
  * event. This allows the POS application to keep track of changes and provides the opportunity to
  * filter which offers and loyalty accounts are applied to the final transaction.
  */
-class LoyaltyReceivedEvent {
+class PSDK_EXPORT LoyaltyReceivedEvent {
 public:
     virtual ~LoyaltyReceivedEvent() {}
 

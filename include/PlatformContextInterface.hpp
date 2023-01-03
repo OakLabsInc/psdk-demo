@@ -4,6 +4,7 @@
 #pragma once
 
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -11,7 +12,7 @@ namespace verifone_sdk {
 enum class LocalizedStringEnum;
 
 /** Contains those objects meant for internal usage only. Not to be exposed to third-parties. */
-class PlatformContextInterface {
+class PSDK_EXPORT PlatformContextInterface {
 public:
     virtual ~PlatformContextInterface() {}
 

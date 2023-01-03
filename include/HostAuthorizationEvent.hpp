@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -14,7 +15,7 @@ struct HostPaymentData;
 struct HostSalesData;
 struct HostTransaction;
 
-class HostAuthorizationEvent {
+class PSDK_EXPORT HostAuthorizationEvent {
 public:
     virtual ~HostAuthorizationEvent() {}
 

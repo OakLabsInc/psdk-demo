@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -25,7 +26,7 @@ class TransactionEventResponse;
  * listener will receive the {@link BasketEvent} with the
  * {@link BasketEvent.BasketAction#FINALIZED} action.
  */
-class BasketAdjustedEventResponse {
+class PSDK_EXPORT BasketAdjustedEventResponse {
 public:
     virtual ~BasketAdjustedEventResponse() {}
 

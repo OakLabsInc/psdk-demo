@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -16,7 +17,7 @@ class Transaction;
 class TransactionEventResponse;
 
 /** When a payment is successfully processed, this event is fired with the relevant information. */
-class PaymentCompletedEvent {
+class PSDK_EXPORT PaymentCompletedEvent {
 public:
     virtual ~PaymentCompletedEvent() {}
 

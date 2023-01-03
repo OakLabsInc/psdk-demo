@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <psdk/export.h>
 
 namespace verifone_sdk {
 
@@ -23,6 +24,7 @@ class LoyaltyReceivedEvent;
 class LoyaltyReceivedEventResponse;
 class NotificationEvent;
 class PaymentCompletedEvent;
+class PrintEvent;
 class ReceiptDeliveryMethodEvent;
 class ReconciliationEvent;
 class ReconciliationsListEvent;
@@ -34,10 +36,10 @@ class UserInputEvent;
 class UserInputEventResponse;
 
 /**
- * The listener interface for session events. More than one listener may be registered with a
- * session, but there must always be at least one listener.
+ * Deprecated on 2020-06-01.
+ * Please use {@link #CommerceListener2}.
  */
-class CommerceListener {
+class PSDK_EXPORT CommerceListener {
 public:
     virtual ~CommerceListener() {}
 
@@ -97,6 +99,9 @@ public:
 
     /** Handle NotificationEvent */
     virtual std::shared_ptr<TransactionEventResponse> handleNotificationEvent(const std::shared_ptr<NotificationEvent> & event) = 0;
+
+    /** Handle PrintEvent */
+    virtual void handlePrintEvent(const std::shared_ptr<PrintEvent> & event) = 0;
 };
 
 }  // namespace verifone_sdk

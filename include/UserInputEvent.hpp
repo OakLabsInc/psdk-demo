@@ -6,18 +6,21 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
 
+class Image;
 class RequestParameters;
 class Transaction;
 class UserInputEventResponse;
 class Values;
+enum class InputSubcommand;
 enum class InputType;
 
 /** Either contains the information requested from the customer, or enables sending a response to collect information from the cashier. */
-class UserInputEvent {
+class PSDK_EXPORT UserInputEvent {
 public:
     virtual ~UserInputEvent() {}
 
@@ -75,7 +78,18 @@ public:
      * If {@link #getType()} is {@link #TYPE}, returns the requested input type, else if this is
      * the {@link #REQUEST_TYPE}, returns the input type that is being requested.
      */
-    virtual InputType getInputType() const = 0;
+    virtual std::optional<InputType> getInputType() const = 0;
+
+    /** Return the input subcommand that is being requested */
+    virtual std::optional<InputSubcommand> getInputSubcommand() const = 0;
+
+    /**
+     * Returns the signature image. When {@link #getType()} is {@link #REQUEST_TYPE}, 
+     * then this will only have a value if the InputSubcommand is SIGNATURE_PROVIDED. 
+     * When {@link #getType()} is {@link #RECEIVED_TYPE}, this will only have a value 
+     * if the InputType is SIGNATURE.
+     */
+    virtual std::shared_ptr<Image> getSignature() const = 0;
 
     /**
      * If {@link #getType()} is {@link #TYPE}, returns the default value from the original request,
@@ -94,6 +108,9 @@ public:
 
     /** Generates response for UserInputEvent */
     virtual std::shared_ptr<UserInputEventResponse> generateUserInputEventResponse() const = 0;
+
+    /** Get InternalData - mainly for legacy POS support */
+    virtual std::optional<std::string> getInternalData() const = 0;
 };
 
 }  // namespace verifone_sdk

@@ -37,6 +37,14 @@ enum class TransactionManagerState : int {
      * interaction from the customer or cashier.
      */
     PAYMENT_PROCESSING,
+    /**
+     * The connection is currently being recovered, no commands can be currently 
+     * sent to the terminal. If an Abort command is received during this state,
+     * then the recovery process will be aborted.
+     */
+    CONNECTION_RECOVERING,
+    /** Waiting for the terminal to complete its command or expecting user interaction */
+    AWAITING_TERMINAL,
 };
 
 constexpr std::string_view toString(const TransactionManagerState& arg) {
@@ -49,6 +57,8 @@ constexpr std::string_view toString(const TransactionManagerState& arg) {
         case TransactionManagerState::SESSION_OPENING: return "SESSION_OPENING";
         case TransactionManagerState::SESSION_OPEN: return "SESSION_OPEN";
         case TransactionManagerState::PAYMENT_PROCESSING: return "PAYMENT_PROCESSING";
+        case TransactionManagerState::CONNECTION_RECOVERING: return "CONNECTION_RECOVERING";
+        case TransactionManagerState::AWAITING_TERMINAL: return "AWAITING_TERMINAL";
         default: return "TransactionManagerState enum value not supported";
     }
 }

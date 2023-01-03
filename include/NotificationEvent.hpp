@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -15,7 +16,7 @@ class TransactionEventResponse;
 enum class NotificationType;
 
 /** Sent when various notifications are received from the terminal that might be helpful to the cashier. */
-class NotificationEvent {
+class PSDK_EXPORT NotificationEvent {
 public:
     virtual ~NotificationEvent() {}
 
@@ -70,6 +71,9 @@ public:
 
     /** Get Notification type */
     virtual NotificationType getNotificationType() const = 0;
+
+    /** Get InternalData - mainly for legacy POS support */
+    virtual std::optional<std::string> getInternalData() const = 0;
 };
 
 }  // namespace verifone_sdk

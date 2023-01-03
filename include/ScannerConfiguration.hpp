@@ -3,11 +3,12 @@
 
 #pragma once
 
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
 
-class ScannerConfiguration {
+class PSDK_EXPORT ScannerConfiguration {
 public:
     virtual ~ScannerConfiguration() {}
 
@@ -25,6 +26,9 @@ public:
      * camera is actively scanning the view area.
      */
     static std::string const STATUS_SCANNING;
+
+    /** The peripheral is connected and ready for use. */
+    static std::string const STATUS_READY;
 
     /**
      * The scanner has found a barcode, and will include the relevant mAttributes. This status is

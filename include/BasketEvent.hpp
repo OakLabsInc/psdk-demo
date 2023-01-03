@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -18,7 +19,7 @@ enum class BasketAction;
 enum class ItemType;
 
 /** Fired when an item is added to the basket, modified, or removed from the basket. */
-class BasketEvent {
+class PSDK_EXPORT BasketEvent {
 public:
     virtual ~BasketEvent() {}
 

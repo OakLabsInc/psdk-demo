@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -12,7 +13,7 @@ namespace verifone_sdk {
 class CommerceResponse;
 class Transaction;
 
-class TransactionEventResponse {
+class PSDK_EXPORT TransactionEventResponse {
 public:
     virtual ~TransactionEventResponse() {}
 

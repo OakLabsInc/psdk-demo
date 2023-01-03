@@ -5,12 +5,13 @@
 
 #include <cstdint>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
 
 /** Represents a single reconciliation, providing the ID and other relevant information. */
-class Reconciliation {
+class PSDK_EXPORT Reconciliation {
 public:
     virtual ~Reconciliation() {}
 

@@ -4,12 +4,20 @@
 #pragma once
 
 #include <memory>
+#include <psdk/export.h>
 
 namespace verifone_sdk {
 
 class Status;
 
-class PsdkStatusListener {
+/**
+ * Add imports for the different djinni files to generate, or add the IDL interfaces directly.
+ * Refer to https://github.com/dropbox/djinni for more information on the IDL structure.
+ * @import "other_file.djinni"
+ * Deprecated on 2020-06-01.
+ * Please use {@link #CommerceListener2}.
+ */
+class PSDK_EXPORT PsdkStatusListener {
 public:
     virtual ~PsdkStatusListener() {}
 

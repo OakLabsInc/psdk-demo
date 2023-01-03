@@ -5,6 +5,7 @@
 
 #include "TransactionType.hpp"
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <utility>
 
@@ -14,7 +15,7 @@ namespace verifone_sdk {
  * The transaction information. This will have multiple components describing the payment,
  * instrument/source, merchant and the sales context.
  */
-struct HostTransaction final {
+struct PSDK_EXPORT HostTransaction final {
     /**
      * A client (user friendly) identifier for the transaction generated at the outset of a business
      * event. The format will be dependent on the calling system.

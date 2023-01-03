@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -13,22 +14,59 @@ namespace verifone_sdk {
 
 class Image;
 class MenuEntry;
+enum class CharacterMaskType;
 enum class ContentType;
+enum class InputSubcommand;
 enum class InputType;
 
-/** RequestParameters for UserInputEvents */
-class RequestParameters {
+/**
+ * RequestParameters conveys data to display and the way to process the display,
+ * and contains the complete content to display.
+ */
+class PSDK_EXPORT RequestParameters {
 public:
     virtual ~RequestParameters() {}
 
     /** Creates an instance of RequestParameters */
     static std::shared_ptr<RequestParameters> create();
 
+    /**
+     * Creates an instance of RequestParameters for requesting user input on device
+     * @param prompt: Text to display on the screen
+     * @param placeholderText: Optional. Default prepopulated text
+     * @param format: Optional. Text mask to format the user input
+     * @param characterMask: Optional. Mask the user data entry {@link #CharacterMaskType}
+     * @param min: Optional. Minimum number of characters
+     * @param max: Optional. Maximum number of characters
+     * @param inputType: Optional. Type of data to collect {@link #InputType}
+     */
+    static std::shared_ptr<RequestParameters> createPrompt(const std::string & prompt, const std::optional<std::string> & placeholderText, const std::optional<std::string> & format, std::optional<CharacterMaskType> characterMaskType, std::optional<int32_t> min, std::optional<int32_t> max, std::optional<InputType> inputType);
+
+    /**
+     * Creates an instance of RequestParameters for Customer Question
+     * @param title: Optional. Text to display on top of the screen
+     * @param prompt: Optional. Text to display on the screen
+     * @param buttonLeftText: Optional. Left button text.
+     * @param rightLeftText: Optional. Right button text.
+     */
+    static std::shared_ptr<RequestParameters> createQuestion(const std::optional<std::string> & title, const std::string & prompt, const std::optional<std::string> & buttonLeftText, const std::optional<std::string> & buttonRightText);
+
     /** Refer to {@link UserInputEvent#getInputType()}. */
-    virtual InputType getInputType() const = 0;
+    virtual std::optional<InputType> getInputType() const = 0;
 
     /** Configures the input type for the request. Refer to {@link UserInputEvent#getInputType()}. */
-    virtual void setInputType(InputType inputType) = 0;
+    virtual void setInputType(std::optional<InputType> inputType) = 0;
+
+    /** Refer to {@link UserInputEvent#getInputSubcommand()}. */
+    virtual std::optional<InputSubcommand> getInputSubcommand() const = 0;
+
+    /** Configures the input sbcommand for the request. Refer to {@link UserInputEvent#getInputSubcommand()}. */
+    virtual void setInputSubcommand(std::optional<InputSubcommand> inputSubcommand) = 0;
+
+    /** Refer to {@link UserInputEvent#getSignature()}. */
+    virtual std::shared_ptr<Image> getSignature() const = 0;
+
+    virtual void setSignature(const std::shared_ptr<Image> & signature) = 0;
 
     /** Refer to {@link UserInputEvent#getDefaultValue()}. */
     virtual std::optional<std::string> getDefaultValue() const = 0;
@@ -55,21 +93,15 @@ public:
      */
     virtual void setMenuEntries(const std::vector<std::shared_ptr<MenuEntry>> & menuEntries) = 0;
 
-    /**
-     * Returns the content type, either {@link ContentType#HTML} or
-     * {@link ContentType#TEXT}.
-     */
+    /** Returns the content type. */
     virtual ContentType getContentType() const = 0;
 
-    /**
-     * Sets the content type, either {@link ContentType#HTML} or
-     * {@link ContentType#TEXT}.
-     */
+    /** Sets the content type according to the enumeration. */
     virtual void setContentType(ContentType contentType) = 0;
 
     /**
-     * Sets the content that should be displayed to the cashier according to the type. If
-     * the type is {@link InputType#MENU_OPTIONS}, then this should be
+     * Sets the content that should be displayed according to the content type.
+     * If the type is {@link InputType#MENU_OPTIONS}, then this should be
      * displayed as a header above the menu options.
      */
     virtual void setContent(const std::optional<std::string> & content) = 0;
@@ -187,7 +219,7 @@ public:
     virtual bool isFromRightToLeft() const = 0;
 
     /** Refer to {@link #isFromRightToLeft()}. */
-    virtual void setIsFromRightToLeft(bool fromRightToLeft) = 0;
+    virtual void setFromRightToLeft(bool fromRightToLeft) = 0;
 
     /**
      * Indicates that the entry should be masked with an '#' or similar character while being

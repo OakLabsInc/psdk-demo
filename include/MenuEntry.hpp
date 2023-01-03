@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -11,7 +12,7 @@ namespace verifone_sdk {
 enum class ContentType;
 
 /** Menu options offered to the Cashier. */
-class MenuEntry {
+class PSDK_EXPORT MenuEntry {
 public:
     virtual ~MenuEntry() {}
 
@@ -40,24 +41,18 @@ public:
     virtual bool isSelectedByDefault() const = 0;
 
     /** Sets the option to selected by default or not. */
-    virtual void setIsSelectedByDefault(bool selectedByDefault) = 0;
+    virtual void setSelectedByDefault(bool selectedByDefault) = 0;
 
-    /**
-     * Sets the contentType, either {@link ContentType#HTML} or
-     * {@link ContentType#TEXT} (default).
-     */
+    /** Sets the contentType. */
     virtual void setContentType(ContentType contentType) = 0;
 
-    /**
-     * The content type, either {@link ContentType#HTML} or
-     * {@link ContentType#TEXT} (default).
-     */
+    /** Returns the content type for this entry. */
     virtual ContentType getContentType() const = 0;
 
-    /** The content to be displayed, either text or html depending on {@link #getContentType()}. */
+    /** The content to be displayed. */
     virtual std::string getContent() const = 0;
 
-    /** Sets the content to be displayed, either text or html depending on {@link #getContentType()}. */
+    /** Sets the content to be displayed. */
     virtual void setContent(const std::string & content) = 0;
 };
 

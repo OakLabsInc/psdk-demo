@@ -9,6 +9,7 @@
 #include "MerchantPresent.hpp"
 #include "PresentationMethod.hpp"
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <utility>
 
@@ -18,7 +19,7 @@ namespace verifone_sdk {
  * These properties will refer to the context by which a Payment was received associated
  * with the transaction event.
  */
-struct HostPaymentContext final {
+struct PSDK_EXPORT HostPaymentContext final {
     /** Was a card physically present during transaction. */
     std::optional<bool> cardPresent;
     /** See {@link MerchantPresent} */
@@ -37,6 +38,8 @@ struct HostPaymentContext final {
     std::optional<AccountType> accountType;
     /** See {@link FallbackCode} */
     std::optional<FallbackCode> fallbackCode;
+    /** Was PIN entry bypassed during contactless payment. */
+    std::optional<bool> pinBypassed;
     /**
      * Application Specific Data
      * This object may contain additional parameters specific to the client. These values must be
@@ -50,6 +53,7 @@ struct HostPaymentContext final {
                        std::optional<PresentationMethod> entryMode_,
                        std::optional<AccountType> accountType_,
                        std::optional<FallbackCode> fallbackCode_,
+                       std::optional<bool> pinBypassed_,
                        std::optional<std::string> metadata_)
     : cardPresent(std::move(cardPresent_))
     , merchantPresent(std::move(merchantPresent_))
@@ -57,6 +61,7 @@ struct HostPaymentContext final {
     , entryMode(std::move(entryMode_))
     , accountType(std::move(accountType_))
     , fallbackCode(std::move(fallbackCode_))
+    , pinBypassed(std::move(pinBypassed_))
     , metadata(std::move(metadata_))
     {}
 };

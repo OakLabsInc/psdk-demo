@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -14,8 +15,8 @@ class Transaction;
 class TransactionEventResponse;
 enum class TransactionResult;
 
-/** The event received when the transaction is completed or cancelled. */
-class TransactionEndedEvent {
+/** Deprecated. Refer to PaymentCompletedEvent. */
+class PSDK_EXPORT TransactionEndedEvent {
 public:
     virtual ~TransactionEndedEvent() {}
 

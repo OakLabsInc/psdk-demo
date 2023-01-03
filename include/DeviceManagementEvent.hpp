@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 
 namespace verifone_sdk {
@@ -18,12 +19,60 @@ enum class DeviceManagementAction;
  * Received when a specific {@link DeviceManagementAction} has been sent to do something on the
  * payment terminal.
  */
-class DeviceManagementEvent {
+class PSDK_EXPORT DeviceManagementEvent {
 public:
     virtual ~DeviceManagementEvent() {}
 
     /** Device management event type */
     static std::string const TYPE;
+
+    /** Encrypted Message */
+    static std::string const ENCRYPTED_MESSAGE_KEY;
+
+    /** Initialization Vector for the encryption performed. */
+    static std::string const INITIALIZATION_VECTOR_KEY;
+
+    /** Key Serial Number */
+    static std::string const KSN_KEY;
+
+    /** VCL Track 1 data */
+    static std::string const TRACK1_KEY;
+
+    /** VCL Track 2 data */
+    static std::string const TRACK2_KEY;
+
+    /** VCL EPARMS data */
+    static std::string const EPARMS_KEY;
+
+    /** VSP Firmware Version */
+    static std::string const VSP_FIRMWARE_VERSION_KEY;
+
+    /** VSP MDK Label */
+    static std::string const MDK_LABEL_KEY;
+
+    /** VSP Encryption State */
+    static std::string const ENCRYPTION_STATE_KEY;
+
+    /** VSP State */
+    static std::string const VSP_STATE_KEY;
+
+    /** VSP Mode */
+    static std::string const VSP_MODE_KEY;
+
+    /** VSP BIN Table ID */
+    static std::string const BIN_TABLE_ID_KEY;
+
+    /** VSP Encryption Algorithm */
+    static std::string const ENCRYPTION_ALGORITHM_KEY;
+
+    /** VSP operation mode */
+    static std::string const OPERATION_MODE_KEY;
+
+    /** VSP initial key id */
+    static std::string const INITIAL_KEY_ID_KEY;
+
+    /** VSP config id */
+    static std::string const CONFIG_ID_KEY;
 
     /**
      * A user-readable message.
@@ -73,6 +122,15 @@ public:
 
     /** Get Device Management Action type */
     virtual DeviceManagementAction getActionType() const = 0;
+
+    /**
+     * Get mapped DeviceManagementEvent values based on
+     * selected key values. Map includes VCL encryption 
+     * such as track1, track2, and EPARMS values, as well
+     * as VSP configuration values. Returns null if the
+     * key is not present in the map.
+     */
+    virtual std::optional<std::string> getValue(const std::string & key) const = 0;
 };
 
 }  // namespace verifone_sdk

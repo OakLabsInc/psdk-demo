@@ -4,12 +4,13 @@
 #pragma once
 
 #include <memory>
+#include <psdk/export.h>
 
 namespace verifone_sdk {
 
 class AccessibilityModeStatus;
 
-class AccessibilityListener {
+class PSDK_EXPORT AccessibilityListener {
 public:
     virtual ~AccessibilityListener() {}
 

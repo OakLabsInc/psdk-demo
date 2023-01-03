@@ -4,6 +4,8 @@
 #pragma once
 
 #include <memory>
+#include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -21,7 +23,7 @@ class Offer;
  * The manager for the basket attached to a transaction. This is used when a basket 
  * is involved in a transaction, but is not required to process a simple sale.
  */
-class BasketManager {
+class PSDK_EXPORT BasketManager {
 public:
     virtual ~BasketManager() {}
 
@@ -31,6 +33,9 @@ public:
     /**
      * Allows attaching a pre-existing basket to the current transaction. This 
      * returns an error if a basket has already been opened and has items.
+     * @param basket The pre-existing basket.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      * @return The status indicating success or failure.
      */
     virtual std::shared_ptr<BasketEvent> registerBasket(const std::shared_ptr<Basket> & basket, const std::shared_ptr<AmountTotals> & totals) = 0;
@@ -65,9 +70,8 @@ public:
      * Adds the items to the basket, notifying listening applications and updating 
      * the display.
      * @param merchandise The items to add to the basket.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen. If null, automatically calculated based on the 
-     * merchandise.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      * @return The status indicating if the item was successfully added after 
      * sending the add request to the display. This does not return information 
      * regarding the display.
@@ -79,8 +83,7 @@ public:
      * updating the display. Uses the Basket Item ID to remove the proper items.
      * @param merchandise The items to remove.
      * @param amountTotals The total running amounts to display on the
-     * customer-facing screen. If null, automatically calculated based on the 
-     * merchandise.
+     * customer-facing screen. This is a required field.
      * @return The status indicating if the item was successfully removed after 
      * sending the removal request to the display. This does not return information 
      * regarding the display.
@@ -92,10 +95,8 @@ public:
      * updating the display. Uses the Basket Item ID to apply the new values.
      * @param merchandise The items to modify with the new values, but containing 
      * the existing Basket Item ID.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen. This should be explicitly set, as the basket cannot 
-     * automatically calculate the difference when modifying the item as it exists 
-     * in the basket.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      * @return The status indicating if the modification was successfully sent to 
      * the display.  This does not return information regarding the display.
      */
@@ -106,8 +107,8 @@ public:
      * @param modifier The modifer to add to this merchandise object. 
      * @param merchandise The items to modify with the new values, but containing 
      * the existing Basket Item ID.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen.  
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      */
     virtual std::shared_ptr<BasketEvent> addModifierToMerchandise(const std::shared_ptr<Modifier> & modifier, const std::shared_ptr<Merchandise> & merchandise, const std::shared_ptr<AmountTotals> & amountTotals) = 0;
 
@@ -116,16 +117,16 @@ public:
      * @param modifier The modifer to remove from this merchandise object. 
      * @param merchandise The items to modify with the new values, but containing 
      * the existing Basket Item ID.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen.  
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      */
     virtual std::shared_ptr<BasketEvent> removeModifierFromMerchandise(const std::shared_ptr<Modifier> & modifier, const std::shared_ptr<Merchandise> & merchandise, const std::shared_ptr<AmountTotals> & amountTotals) = 0;
 
     /**
      * add offers (coupons, discounts, loyalty, etc.) to the existing basket object.
      * @param offers The list of offers to be added to the basket.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      */
     virtual std::shared_ptr<BasketEvent> addOffers(const std::vector<std::shared_ptr<Offer>> & offers, const std::shared_ptr<AmountTotals> & amountTotals) = 0;
 
@@ -133,8 +134,8 @@ public:
      * remove offers (coupons, discounts, loyalty, etc.) from the existing basket 
      * object.
      * @param offers The list of offers to be removed from the basket.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      */
     virtual std::shared_ptr<BasketEvent> removeOffers(const std::vector<std::shared_ptr<Offer>> & offers, const std::shared_ptr<AmountTotals> & amountTotals) = 0;
 
@@ -142,32 +143,32 @@ public:
      * modify offers (coupons, discounts, loyalty, etc.) attached to the existing 
      * basket object.
      * @param offers The list of offers to be modified in the basket.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      */
     virtual std::shared_ptr<BasketEvent> modifyOffers(const std::vector<std::shared_ptr<Offer>> & offers, const std::shared_ptr<AmountTotals> & amountTotals) = 0;
 
     /**
      * add donations to the existing basket object.
      * @param offers The list of donationss to be added to the basket.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      */
     virtual std::shared_ptr<BasketEvent> addDonations(const std::vector<std::shared_ptr<Donation>> & donations, const std::shared_ptr<AmountTotals> & amountTotals) = 0;
 
     /**
      * remove donations from the existing basket object.
      * @param offers The list of donations to be removed from the basket.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      */
     virtual std::shared_ptr<BasketEvent> removeDonations(const std::vector<std::shared_ptr<Donation>> & donations, const std::shared_ptr<AmountTotals> & amountTotals) = 0;
 
     /**
      * modify donations attached to the existing basket object.
      * @param offers The list of donations to be modified in the basket.
-     * @param amountTotals The total running amounts to display on the 
-     * customer-facing screen.
+     * @param amountTotals The total running amounts to display on the
+     * customer-facing screen. This is a required field.
      */
     virtual std::shared_ptr<BasketEvent> modifyDonations(const std::vector<std::shared_ptr<Donation>> & donations, const std::shared_ptr<AmountTotals> & amountTotals) = 0;
 };

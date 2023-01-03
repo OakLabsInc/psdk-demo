@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <optional>
+#include <psdk/export.h>
 #include <string>
 #include <vector>
 
@@ -21,7 +22,7 @@ class TransactionEventResponse;
  * Allows the POS application to edit the loyalty offers and accounts after they were 
  * linked by other applications.
  */
-class LoyaltyReceivedEventResponse {
+class PSDK_EXPORT LoyaltyReceivedEventResponse {
 public:
     virtual ~LoyaltyReceivedEventResponse() {}
 
