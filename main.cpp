@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "PaymentSdkInterface.hpp"
-#include "PlatformContextLinux.hpp"
+#include "NativePlatformContext.hpp"
 #include "PsdkDeviceInformation.hpp"
 #include "PsdkStatusListener.hpp"
 #include "Status.hpp"
@@ -22,7 +22,7 @@
 #include "UserInputEventResponse.hpp"
 #include "UserInputEvent.hpp"
 #include "InputType.hpp"
-#include "CommerceListener.hpp"
+#include "CommerceListener2.hpp"
 #include "Values.hpp"
 #include "BasketAdjustedEvent.hpp"
 #include "HostAuthorizationEvent.hpp"
@@ -53,19 +53,17 @@ void handle_response(std::string in_status, std::string in_message)
   
 }
 
-class ComListener : public verifone_sdk::CommerceListener
+class ComListener : public verifone_sdk::CommerceListener2
 {
 
 public:
   ~ComListener() override = default;
 
-  std::shared_ptr<verifone_sdk::CommerceResponse> handleCommerceEvent(const std::shared_ptr<verifone_sdk::CommerceEvent> &event) override
+  void handleCommerceEvent(const std::shared_ptr<verifone_sdk::CommerceEvent> &event) override
   {
-
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleTransactionEvent(const std::shared_ptr<verifone_sdk::TransactionEvent> &event) override
+  void handleTransactionEvent(const std::shared_ptr<verifone_sdk::TransactionEvent> &event) override
   {
 
     if (event->getType() == verifone_sdk::TransactionEvent::LOGIN_COMPLETED)
@@ -81,45 +79,49 @@ public:
       }
     }
 
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::AmountAdjustedEventResponse> handleAmountAdjustedEvent(const std::shared_ptr<verifone_sdk::AmountAdjustedEvent> &event) override
+
+  void handleAmountAdjustedEvent(const std::shared_ptr<verifone_sdk::AmountAdjustedEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::BasketAdjustedEventResponse> handleBasketAdjustedEvent(const std::shared_ptr<verifone_sdk::BasketAdjustedEvent> &event) override
+
+  void handleBasketAdjustedEvent(const std::shared_ptr<verifone_sdk::BasketAdjustedEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleBasketEvent(const std::shared_ptr<verifone_sdk::BasketEvent> &event) override
+  void handleBasketEvent(const std::shared_ptr<verifone_sdk::BasketEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleCardInformationReceivedEvent(const std::shared_ptr<verifone_sdk::CardInformationReceivedEvent> &event) override
+  void handleCardInformationReceivedEvent(const std::shared_ptr<verifone_sdk::CardInformationReceivedEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleDeviceInformationReceivedEvent(const std::shared_ptr<verifone_sdk::DeviceInformationReceivedEvent> &event) override
+  void handleDeviceManagementEvent(const std::shared_ptr<verifone_sdk::DeviceManagementEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleDeviceManagementEvent(const std::shared_ptr<verifone_sdk::DeviceManagementEvent> &event) override
+
+  void handleLoyaltyReceivedEvent(const std::shared_ptr<verifone_sdk::LoyaltyReceivedEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::LoyaltyReceivedEventResponse> handleLoyaltyReceivedEvent(const std::shared_ptr<verifone_sdk::LoyaltyReceivedEvent> &event) override
-  {
-    return nullptr;
-  }
+ void handleStatus(const std::shared_ptr<verifone_sdk::Status> & status) override
+ {
+ }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handlePaymentCompletedEvent(const std::shared_ptr<verifone_sdk::PaymentCompletedEvent> &event) override
+ void handleDeviceVitalsInformationEvent(const std::shared_ptr<verifone_sdk::DeviceVitalsInformationEvent> & event) override
+ {
+ }
+
+ void handlePinEvent(const std::shared_ptr<verifone_sdk::PinEvent> & event) override
+ {
+ } 
+
+
+  void handlePaymentCompletedEvent(const std::shared_ptr<verifone_sdk::PaymentCompletedEvent> &event) override
   {
 
     if (event->getType() == verifone_sdk::TransactionEvent::TRANSACTION_PAYMENT_COMPLETED)
@@ -142,42 +144,38 @@ public:
       }
     }
 
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleReceiptDeliveryMethodEvent(const std::shared_ptr<verifone_sdk::ReceiptDeliveryMethodEvent> &event) override
+  void handleReceiptDeliveryMethodEvent(const std::shared_ptr<verifone_sdk::ReceiptDeliveryMethodEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleStoredValueCardEvent(const std::shared_ptr<verifone_sdk::StoredValueCardEvent> &event) override
+  void handleStoredValueCardEvent(const std::shared_ptr<verifone_sdk::StoredValueCardEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::UserInputEventResponse> handleUserInputEvent(const std::shared_ptr<verifone_sdk::UserInputEvent> &event) override
+  void handleUserInputEvent(const std::shared_ptr<verifone_sdk::UserInputEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleReconciliationEvent(const std::shared_ptr<verifone_sdk::ReconciliationEvent> &event) override
+  void handleReconciliationEvent(const std::shared_ptr<verifone_sdk::ReconciliationEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::CommerceResponse> handleReconciliationsListEvent(const std::shared_ptr<verifone_sdk::ReconciliationsListEvent> &event) override
+  void handleReconciliationsListEvent(const std::shared_ptr<verifone_sdk::ReconciliationsListEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleTransactionQueryEvent(const std::shared_ptr<verifone_sdk::TransactionQueryEvent> &event) override
+  void handleTransactionQueryEvent(const std::shared_ptr<verifone_sdk::TransactionQueryEvent> &event) override
   {
-    return nullptr;
   }
 
-  std::shared_ptr<verifone_sdk::TransactionEventResponse> handleNotificationEvent(const std::shared_ptr<verifone_sdk::NotificationEvent> &event) override
+  void handleNotificationEvent(const std::shared_ptr<verifone_sdk::NotificationEvent> &event) override
   {
-    return nullptr;
+  }
+
+  void handlePrintEvent(const std::shared_ptr<verifone_sdk::PrintEvent> &event) override
+  {
   }
 
   void handleHostAuthorizationEvent(const std::shared_ptr<verifone_sdk::HostAuthorizationEvent> &event) override
@@ -187,6 +185,8 @@ public:
   void handleHostFinalizeTransactionEvent(const std::shared_ptr<verifone_sdk::HostFinalizeTransactionEvent> &event) override
   {
   }
+
+
 };
 
 class StatusListener : public verifone_sdk::PsdkStatusListener
@@ -270,16 +270,18 @@ int main(int argc, char **argv)
       {verifone_sdk::PsdkDeviceInformation::DEVICE_CONNECTION_TYPE_KEY, "tcpip"}};
 
   int last_status;
-  std::shared_ptr<verifone_sdk::PaymentSdkInterface> psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreatePlatformContextLinux(std::nullopt));
+
+  std::shared_ptr<verifone_sdk::PaymentSdkInterface> psdk = verifone_sdk::PaymentSdkInterface::create(verifone_sdk::CreateNativePlatformContext(std::nullopt));
+
   psdk->configureLogLevel(verifone_sdk::PsdkLogLevel::LOG_NONE);
 
-  auto listener = std::make_shared<StatusListener>([&](const std::shared_ptr<verifone_sdk::Status> &status) {
-    last_status = status->getStatus();
-  });
+
+  auto listener = std::make_shared<ComListener>();
 
   psdk->initializeFromValues(listener, param_map);
 
-  std::shared_ptr<verifone_sdk::CommerceListener> com_listener = std::make_shared<ComListener>();
+
+  auto com_listener = std::shared_ptr<verifone_sdk::CommerceListener>();
 
   if (transaction_manager = psdk->getTransactionManager() )
   {
